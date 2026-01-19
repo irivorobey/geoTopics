@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Heterogeneity basic analysis">
+    <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Subfield distributions">
       <change afterPath="$PROJECT_DIR$/data/authorsPapersTopicsYearInstitutions.parquet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_distances.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_representation_metrics.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_articles_by_country.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_articles_by_country.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_data.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_data.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_distances.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_distances.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_representation_metrics.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/test_representation_metrics.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/utility_functions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,11 +27,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "assignee": "irivorobey"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;assignee&quot;: &quot;irivorobey&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;assignee&quot;: &quot;irivorobey&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;git@github.com:irivorobey/geoscience.git&quot;,
@@ -113,7 +117,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768567099290</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Subfield distributions">
+      <option name="closed" value="true" />
+      <created>1768583096402</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1768583096402</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -138,6 +150,7 @@
     <MESSAGE value="Added data from Floriana" />
     <MESSAGE value="First Look on the data" />
     <MESSAGE value="Heterogeneity basic analysis" />
-    <option name="LAST_COMMIT_MESSAGE" value="Heterogeneity basic analysis" />
+    <MESSAGE value="Subfield distributions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Subfield distributions" />
   </component>
 </project>

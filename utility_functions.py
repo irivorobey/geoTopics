@@ -4,18 +4,18 @@ import numpy as np
 PATH = "data/"
 
 df_country = pd.read_csv(PATH+'countryInfo.csv')
-id2name=dict(zip(df_country['alpha-2'],df_country['name']))
-id2region=dict(zip(df_country['alpha-2'],df_country['region']))
-id2subregion=dict(zip(df_country['alpha-2'],df_country['sub-region']))
+id2name_country=dict(zip(df_country['alpha-2'],df_country['name']))
+id2region_country=dict(zip(df_country['alpha-2'],df_country['region']))
+id2subregion_country=dict(zip(df_country['alpha-2'],df_country['sub-region']))
 
-id2name['XK']='Kosovo'
-id2region['XK']='Europe'
-id2subregion['XK']='Southern Europe'
+id2name_country['XK']='Kosovo'
+id2region_country['XK']='Europe'
+id2subregion_country['XK']='Southern Europe'
 
 df_topics=pd.read_csv(PATH+'topic_mapping_table_19022024.csv')
 df_topics['topic_id']=df_topics['topic_id'].apply(lambda x: 'T'+str(x))
-id2name=dict(zip(df_topics['topic_id'],df_topics['topic_name']))
-id2field=dict(zip(df_topics['topic_id'],df_topics['field_name']))
+id2name_topic=dict(zip(df_topics['topic_id'],df_topics['topic_name']))
+id2field_topic=dict(zip(df_topics['topic_id'],df_topics['field_name']))
 
 def gini(x):
     x = np.asarray(x.dropna(), dtype=float)
@@ -51,3 +51,12 @@ def get_country_info(code: str, df_country: pd.DataFrame = df_country):
         .rename(columns={"alpha-2": "code"})
         .query(f"code == \"{code}\"")
     )
+
+def top_n_countries_by_articles(n_countries: int = 20):
+    return (
+        pd.read_csv(PATH+"df_country_subfield.csv", index_col="country")
+        .sum(axis=1)
+        .sort_values()
+        .tail(n_countries)
+        .index
+    ).to_list()
