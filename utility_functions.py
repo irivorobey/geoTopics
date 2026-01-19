@@ -14,8 +14,8 @@ id2subregion_country['XK']='Southern Europe'
 
 df_topics=pd.read_csv(PATH+'topic_mapping_table_19022024.csv')
 df_topics['topic_id']=df_topics['topic_id'].apply(lambda x: 'T'+str(x))
-id2name_topic=dict(zip(df_topics['topic_id'],df_topics['topic_name']))
-id2field_topic=dict(zip(df_topics['topic_id'],df_topics['field_name']))
+id2field_topic=dict(zip(df_topics['subfield_id'],df_topics['field_name']))
+id2subfield_topic=dict(zip(df_topics['subfield_id'],df_topics['subfield_name']))
 
 def gini(x):
     x = np.asarray(x.dropna(), dtype=float)
