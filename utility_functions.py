@@ -52,6 +52,7 @@ def get_country_info(code: str, df_country: pd.DataFrame = df_country):
         .query(f"code == \"{code}\"")
     )
 
+
 def top_n_countries_by_articles(n_countries: int = 20):
     return (
         pd.read_csv(PATH+"df_country_subfield.csv", index_col="country")
@@ -60,3 +61,54 @@ def top_n_countries_by_articles(n_countries: int = 20):
         .tail(n_countries)
         .index
     ).to_list()
+
+
+def get_subfield_tree(df: pd.DataFrame = df_topics, dist_list: list = [1, 0.1, 0.01]):
+    domain_id_list = df.domain_id.drop_duplicates().sort_values().to_list()
+    domain_list = []
+    for domain in domain_id_list:
+        field_id_list = df.query(f"domain_id == {domain}").field_id.drop_duplicates().sort_values().to_list()
+        field_list = []
+        for field in field_id_list:
+            subfield_id_list = df.query(
+                f"field_id == {field}").subfield_id.drop_duplicates().sort_values().to_list()
+            subfield_list = [{"id": subfield, "length": dist_list[2]} for subfield in subfield_id_list]
+            field_list.append({
+                "id": field,
+                "length": dist_list[1],
+                "branches": subfield_list,
+            })
+        domain_list.append({
+            "id": domain,
+            "length": dist_list[0],
+            "branches": field_list,
+        })
+
+    subfields_tree = {
+        "id": 0,
+        "branches": domain_list,
+    }
+
+    return subfields_tree
+
+
+def get_dist_w1_tree(tree, mu_dict, nu_dict):
+    subtree = tree.get("branches", None)
+    if subtree is None:
+        leave_id = tree["id"]
+        edge_length = tree.get("length", None)
+        mu_id = mu_dict.get(str(leave_id), 0)
+        nu_id = nu_dict.get(str(leave_id), 0)
+        return mu_id, nu_id, abs(mu_id - nu_id) * edge_length
+    else:
+        mu_id_array = np.full(len(subtree), 0, dtype=float)
+        nu_id_array = np.full(len(subtree), 0, dtype=float)
+        dist_sum = 0
+        edge_length = tree.get("length", None)
+        for i, branch in enumerate(subtree):
+            mu_id_array[i], nu_id_array[i], dist_branch = get_dist_w1_tree(branch, mu_dict, nu_dict)
+            dist_sum += dist_branch
+        if edge_length is None:
+            return mu_id_array.sum(), nu_id_array.sum(), dist_sum
+        else:
+            return mu_id_array.sum(), nu_id_array.sum(), dist_sum + abs(mu_id_array.sum() - nu_id_array.sum()) * edge_length
