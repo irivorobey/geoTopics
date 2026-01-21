@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import plotly.graph_objs as go
 
 PATH = "data/"
 
@@ -112,3 +113,63 @@ def get_dist_w1_tree(tree, mu_dict, nu_dict):
             return mu_id_array.sum(), nu_id_array.sum(), dist_sum
         else:
             return mu_id_array.sum(), nu_id_array.sum(), dist_sum + abs(mu_id_array.sum() - nu_id_array.sum()) * edge_length
+
+
+def plotly_heatmap(df, x_labels, y_labels,
+                   title = "Heatmap",
+                   x_type = None, y_type=None,
+                   x_name="X", y_name="Y", z_name="Z",
+                   line_height=20, z_min=None, z_max=None):
+    customdata = np.empty(
+        (len(y_labels), len(x_labels), 2),
+        dtype=object
+    )
+
+    if x_type is None:
+        x_full = x_labels
+    elif x_type == "country":
+        x_full = [id2name_country[c] for c in x_labels]
+    elif x_type == "subfield":
+        x_full = [id2subfield_topic[int(s)] for s in x_labels]
+    else:
+        x_full = x_labels
+
+    if y_type is None:
+        y_full = y_labels
+    elif y_type == "country":
+        y_full = [id2name_country[c] for c in y_labels]
+    elif y_type == "subfield":
+        y_full = [id2subfield_topic[int(s)] for s in y_labels]
+    else:
+        y_full = y_labels
+
+    customdata[:, :, 0] = np.tile(x_full, (len(y_labels), 1))
+    customdata[:, :, 1] = np.tile(np.array(y_full).reshape(-1, 1), (1, len(x_labels)))
+
+    fig = go.Figure(
+        data=go.Heatmap(
+            z=df.values,
+            x=x_labels,
+            y=y_labels,
+            colorscale="Viridis",
+            zmin=z_min,
+            zmax=z_max,
+            customdata=customdata,
+            hovertemplate=(
+                "<b>"+x_name+": </b>%{customdata[0]}<br>"
+                "<b>"+y_name+": </b>%{customdata[1]}<br>"
+                "<b>"+z_name+": </b> %{z:.3f}<br>"
+                f"<extra></extra>"
+            )
+        )
+    )
+
+    fig.update_layout(
+        title=title,
+        height=line_height*len(y_labels),
+        # height=40*len(y_labels),
+        xaxis=dict(tickangle=45, automargin=True),
+        yaxis=dict(autorange="reversed", automargin=True)  # keep top-to-bottom ordering
+    )
+
+    return fig
