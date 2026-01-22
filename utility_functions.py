@@ -128,18 +128,18 @@ def plotly_heatmap(df, x_labels, y_labels,
     if x_type is None:
         x_full = x_labels
     elif x_type == "country":
-        x_full = [id2name_country[c] for c in x_labels]
+        x_full = [f"{id2name_country[c]} ({c})" for c in x_labels]
     elif x_type == "subfield":
-        x_full = [id2subfield_topic[int(s)] for s in x_labels]
+        x_full = [f"{id2subfield_topic[int(s)]} ({s})" for s in x_labels]
     else:
         x_full = x_labels
 
     if y_type is None:
         y_full = y_labels
     elif y_type == "country":
-        y_full = [id2name_country[c] for c in y_labels]
+        y_full = [f"{id2name_country[c]} ({c})" for c in y_labels]
     elif y_type == "subfield":
-        y_full = [id2subfield_topic[int(s)] for s in y_labels]
+        y_full = [f"{id2subfield_topic[int(s)]} ({s})" for s in y_labels]
     else:
         y_full = y_labels
 
