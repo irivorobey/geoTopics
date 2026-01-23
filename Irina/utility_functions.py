@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
 
-PATH = "data/"
+PATH = "../data/"
 
-df_country = pd.read_csv(PATH+'countryInfo.csv')
+df_country = pd.read_csv(PATH+'Floriana_country_info.csv')
 id2name_country=dict(zip(df_country['alpha-2'],df_country['name']))
 id2region_country=dict(zip(df_country['alpha-2'],df_country['region']))
 id2subregion_country=dict(zip(df_country['alpha-2'],df_country['sub-region']))
@@ -13,7 +13,7 @@ id2name_country['XK']='Kosovo'
 id2region_country['XK']='Europe'
 id2subregion_country['XK']='Southern Europe'
 
-df_topics=pd.read_csv(PATH+'topic_mapping_table_19022024.csv')
+df_topics=pd.read_csv(PATH+'Floriana_topic_mapping.csv')
 df_topics['topic_id']=df_topics['topic_id'].apply(lambda x: 'T'+str(x))
 id2field_topic=dict(zip(df_topics['subfield_id'],df_topics['field_name']))
 id2subfield_topic=dict(zip(df_topics['subfield_id'],df_topics['subfield_name']))
