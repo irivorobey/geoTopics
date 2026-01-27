@@ -180,7 +180,8 @@ def get_country_subfield_prob_metric(df_country_subfield: pd.DataFrame,):
     return df_country_subfield_norm
 
 
-def get_subfield_stats(df_interest_metric, year):
+def get_subfield_stats(df_country_subfield, df_interest_metric, year):
+
     return (
         df_interest_metric
         .quantile(0.25)
@@ -190,35 +191,48 @@ def get_subfield_stats(df_interest_metric, year):
             q3 = df_interest_metric.quantile(0.75),
             mean_val = df_interest_metric.mean(axis=0),
             std_val = df_interest_metric.std(axis=0),
+            counts_countries = df_interest_metric.count(axis=0),
+            counts_articles = df_country_subfield.sum(axis=0),
             year = year
         )
         .reset_index()
     )
 
 
-def top_n_subfields(row, n=5):
-    return [code for code in row.nlargest(n).index.tolist()]
+def top_n_columns(row, n=5):
+    if n == 1:
+        return [code for code in row.nlargest(n).index.tolist()][0]
+    else:
+        return [code for code in row.nlargest(n).index.tolist()]
+
+
+def bottom_n_columns(row, n=5):
+    if n == 1:
+        return [code for code in row.nsmallest(n).index.tolist()][0]
+    else:
+        return [code for code in row.nsmallest(n).index.tolist()]
 
 
 def get_interest_metric_stats(df_interest_metric: pd.DataFrame, df_subfield_stats, year: int):
     df_top_subfields = pd.DataFrame.from_dict(
         df_interest_metric
-        .apply(top_n_subfields, axis=1)
+        .apply(top_n_columns, axis=1)
         .to_dict(),
         orient="index",
         columns=["top1_subfield", "top2_subfield", "top3_subfield", "top4_subfield", "top5_subfield"]
     )
+    interest_metric_array = df_interest_metric.values
     return (
         df_interest_metric
         .std(axis=1)
         .to_frame("std_val")
         .assign(
-            count_subfield_0_25 = (df_interest_metric.values < df_subfield_stats.q1.values).sum(axis=1),
-            count_subfield_25_50 = ((df_interest_metric.values >= df_subfield_stats.q1.values) &
-                           (df_interest_metric.values < df_subfield_stats.q2.values)).sum(axis=1),
-            count_subfield_50_75 = ((df_interest_metric.values >= df_subfield_stats.q2.values) &
-                           (df_interest_metric.values < df_subfield_stats.q3.values)).sum(axis=1),
-            count_subfield_75_100 = (df_interest_metric.values >= df_subfield_stats.q3.values).sum(axis=1),
+            count_subfield_0_25 = (interest_metric_array < df_subfield_stats.q1.values).sum(axis=1),
+            count_subfield_25_50 = ((interest_metric_array >= df_subfield_stats.q1.values) &
+                           (interest_metric_array < df_subfield_stats.q2.values)).sum(axis=1),
+            count_subfield_50_75 = ((interest_metric_array >= df_subfield_stats.q2.values) &
+                           (interest_metric_array < df_subfield_stats.q3.values)).sum(axis=1),
+            count_subfield_75_100 = (interest_metric_array >= df_subfield_stats.q3.values).sum(axis=1),
         )
         .merge(df_top_subfields, left_index=True, right_index=True, how="outer")
         .assign(year=year)
@@ -297,6 +311,34 @@ def get_w1_distances(subfields_tree, df_prob_metric):
                     mu_dict=df_prob_metric.loc[country1].dropna().to_dict(),
                     nu_dict=df_prob_metric.loc[country2].dropna().to_dict())
     return pd.DataFrame(country_dist_w1_world, index=country_list, columns=country_list)
+
+
+def get_distance_stats(df_distance, year):
+    df_distance_nan_diag = df_distance.replace(0, np.nan)
+    distance_array = df_distance_nan_diag.values
+
+    return (
+        df_distance_nan_diag
+        .mean(axis=1)
+        .to_frame("mean_values")
+        .assign(
+            std_values=np.nanstd(distance_array, axis=1),
+            q1=np.nanpercentile(distance_array, 25, axis=1),
+            q2=np.nanmedian(distance_array, axis=1),
+            q3=np.nanpercentile(distance_array, 75, axis=1),
+            count_0_1=(distance_array <= 1).sum(axis=1),
+            count_1_2=(distance_array > 1).sum(axis=1),
+            share_0_1=(distance_array <= 1).sum(axis=1) / df_distance_nan_diag.count(axis=1),
+            share_1_2=(distance_array > 1).sum(axis=1) / df_distance_nan_diag.count(axis=1),
+            furtherest=df_distance_nan_diag.apply(lambda row: top_n_columns(row, 1), axis=1),
+            closest=df_distance_nan_diag.apply(lambda row: bottom_n_columns(row, 1), axis=1),
+            furtherest_dist=df_distance_nan_diag.max(axis=1),
+            closest_dist=df_distance_nan_diag.min(axis=1),
+            range_dist=lambda df: df.furtherest_dist - df.closest_dist,
+            year=year
+        )
+        .reset_index()
+    )
 
 
 def count_function(name, df):
