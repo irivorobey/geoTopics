@@ -3,6 +3,7 @@ import numpy as np
 import plotly.graph_objs as go
 import geopandas as gpd
 import matplotlib.pyplot as plt
+from IPython.core.display_functions import display
 from matplotlib.patches import Patch
 import matplotlib as mpl
 import scipy.spatial.distance as spd
@@ -657,6 +658,11 @@ def get_dist_w1_tree(tree, mu_dict, nu_dict):
 
 
 def get_w1_distances(subfields_tree, df_prob_metric):
+
+    subfield1 = "2713"
+    subfield2 = "1904"
+    _, _, w1_max = get_dist_w1_tree(subfields_tree, {subfield1: 1}, {subfield2: 1})
+
     country_list = df_prob_metric.index.to_list()
     country_dist_w1_world = np.full((len(country_list), len(country_list)), np.nan, dtype=float)
 
@@ -669,7 +675,7 @@ def get_w1_distances(subfields_tree, df_prob_metric):
                     subfields_tree,
                     mu_dict=df_prob_metric.loc[country1].dropna().to_dict(),
                     nu_dict=df_prob_metric.loc[country2].dropna().to_dict())
-    return pd.DataFrame(country_dist_w1_world, index=country_list, columns=country_list)
+    return pd.DataFrame(country_dist_w1_world, index=country_list, columns=country_list).div(w1_max)
 
 
 def get_distance_stats(df_distance, year):
@@ -749,6 +755,15 @@ def get_cluster_dfs(cluster, df_country_subfield_norm_world_norm, df_map,):
     return df_top_subfields, df_individual_subfields, df_subfields_counted, df_fields_counted
 
 
+def get_jaccard_distances(df_metric):
+    n_countries = len(df_metric.index)
+    dist_array = np.full((n_countries, n_countries), np.nan)
+    for i in range(n_countries):
+        for j in range(n_countries):
+            dist_array[i, j] = spd.jaccard(df_metric.iloc[i].fillna(0) > 0, df_metric.iloc[j].fillna(0) > 0)
+    return pd.DataFrame(dist_array, index=df_metric.index, columns=df_metric.index)
+
+
 def get_jaccard(df, df1, df2, col_name="jaccard", col_df2=None):
     for c in df.index:
         if col_df2 is None:
@@ -762,7 +777,11 @@ def get_jaccard(df, df1, df2, col_name="jaccard", col_df2=None):
             else:
                 df.loc[c, col_name] = 1
 
-def get_w1_tree(df, subfield_tree, df1, df2=None, col_name="w1_tree", dict2=None, w1_max=1):
+def get_w1_tree(df, subfield_tree, df1, df2=None, col_name="w1_tree", dict2=None, w1_max=None):
+    if w1_max is None:
+        subfield1 = "2713"
+        subfield2 = "1904"
+        _, _, w1_max = get_dist_w1_tree(subfield_tree, {subfield1: 1}, {subfield2: 1})
     for c in df.index:
         if dict2 is None:
             if (c in df1.index) and (c in df2.index):
