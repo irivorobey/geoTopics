@@ -142,7 +142,7 @@ def plot_map_continuous(df, column, year="", title="", legend="", country_column
         world = gpd.read_file(URL_WORLD)
 
         # Merge your data with geometries
-        world = world.merge(df, left_on='ADM0_A3', right_on=country_column, how='left')
+        world = world.merge(df, left_on='ADM0_A3', right_on=country_column, how='left').dropna(subset=column)
 
         cmap = plt.cm.plasma
         if range is None:
@@ -158,12 +158,9 @@ def plot_map_continuous(df, column, year="", title="", legend="", country_column
 
         if ax is None:
             fig, ax = plt.subplots(figsize=(12, 6))
-
-
-
         ax.clear()
         # later
-
+        # print(world)
         # --- Move legend to the figure, horizontal ---
         world.plot(column=column, cmap=cmap, norm=norm, edgecolor='black', ax=ax)
 

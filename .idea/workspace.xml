@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Worked with collaborations">
-      <change afterPath="$PROJECT_DIR$/data/authorsPapersTopicsYearInstitutions.parquet" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Irina/analysis_geotopics_Floriana.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/analysis_geotopics_Floriana.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Floriana_topic_mapping.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/Floriana_topic_mapping.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/jaccard_stability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/jaccard_stability.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/stability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/stability.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/utility_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/irina/utility_functions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +40,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:irivorobey/geoscience.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/irivorobey/geoTopics.git&quot;,
     &quot;accountId&quot;: &quot;bbecc49c-a972-496e-81e0-870f925c6c96&quot;
   }
 }</component>
@@ -47,17 +52,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/irinavorobeva/PycharmProjects/geoscience/data&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/irinavorobeva/PycharmProjects/geoscience/data",
+    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data" />
