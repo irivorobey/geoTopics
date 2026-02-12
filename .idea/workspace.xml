@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Worked with collaborations">
+    <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Worked with stability">
+      <change afterPath="$PROJECT_DIR$/irina/test.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Irina/analysis_geotopics_Floriana.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/analysis_geotopics_Floriana.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Floriana_topic_mapping.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/Floriana_topic_mapping.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/irina/jaccard_stability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/jaccard_stability.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/irina/stability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/stability.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/irina/utility_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/irina/utility_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/probabilities_compare_national_international.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/probabilities_compare_national_international.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/w1_countries.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/w1_countries.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,17 +51,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/irinavorobeva/PycharmProjects/geoscience/data",
-    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/irinavorobeva/PycharmProjects/geoscience/data&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data" />
@@ -166,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769097936974</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Worked with stability">
+      <option name="closed" value="true" />
+      <created>1770822098499</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1770822098499</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -197,6 +204,7 @@
     <MESSAGE value="Added cosine distances for log_world vectors" />
     <MESSAGE value="Added collaborations" />
     <MESSAGE value="Worked with collaborations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Worked with collaborations" />
+    <MESSAGE value="Worked with stability" />
+    <option name="LAST_COMMIT_MESSAGE" value="Worked with stability" />
   </component>
 </project>
