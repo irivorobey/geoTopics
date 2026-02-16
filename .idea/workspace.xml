@@ -4,12 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Worked with stability">
-      <change afterPath="$PROJECT_DIR$/irina/test.ipynb" afterDir="false" />
+    <list default="true" id="9c65bd7d-f48f-4842-b616-a370edaeb513" name="Changes" comment="Polishing">
+      <change afterPath="$PROJECT_DIR$/irina/test_clustering.ipynb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/irina/w1_fields.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/irina/jaccard_stability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/jaccard_stability.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/irina/probabilities_compare_national_international.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/probabilities_compare_national_international.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/utility_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/irina/utility_functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/irina/w1_countries.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/w1_countries.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/irina/w1_stability.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/irina/w1_stability.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +177,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770822098499</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1770900543385</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1770900543385</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -205,6 +217,7 @@
     <MESSAGE value="Added collaborations" />
     <MESSAGE value="Worked with collaborations" />
     <MESSAGE value="Worked with stability" />
-    <option name="LAST_COMMIT_MESSAGE" value="Worked with stability" />
+    <MESSAGE value="Polishing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Polishing" />
   </component>
 </project>

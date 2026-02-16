@@ -144,7 +144,8 @@ def plot_map_continuous(df, column, year="", title="", legend="", country_column
         # Merge your data with geometries
         world = world.merge(df, left_on='ADM0_A3', right_on=country_column, how='left').dropna(subset=column)
 
-        cmap = plt.cm.plasma
+        # cmap = plt.cm.plasma
+        cmap = plt.cm.hsv
         if range is None:
             vmin = world[column].min()
             vmax = world[column].max()
@@ -602,6 +603,25 @@ def get_cosine_distances(df_country_subfield: pd.DataFrame,):
 
     return pd.DataFrame(dist_matrix, index=df_country_subfield.index, columns=df_country_subfield.index)
 
+def get_field_tree(df: pd.DataFrame = df_topics, dist_list: list = [1, 0.1]):
+    domain_id_list = df.domain_id.drop_duplicates().sort_values().to_list()
+    domain_list = []
+    for domain in domain_id_list:
+        field_id_list = df.query(f"domain_id == {domain}").field_id.drop_duplicates().sort_values().to_list()
+        field_list = [{"id": str(field), "length": dist_list[1]} for field in field_id_list]
+        domain_list.append({
+            "id": domain,
+            "length": dist_list[0],
+            "branches": field_list,
+        })
+
+    subfields_tree = {
+        "id": 0,
+        "branches": domain_list,
+    }
+
+    return subfields_tree
+
 
 def get_subfield_tree(df: pd.DataFrame = df_topics, dist_list: list = [1, 0.1, 0.01]):
     domain_id_list = df.domain_id.drop_duplicates().sort_values().to_list()
@@ -637,6 +657,7 @@ def get_dist_w1_tree(tree, mu_dict, nu_dict):
     if subtree is None:
         leave_id = tree["id"]
         edge_length = tree.get("length", None)
+
         mu_id = mu_dict.get(str(leave_id), 0)
         nu_id = nu_dict.get(str(leave_id), 0)
         return mu_id, nu_id, abs(mu_id - nu_id) * edge_length
@@ -654,11 +675,15 @@ def get_dist_w1_tree(tree, mu_dict, nu_dict):
             return mu_id_array.sum(), nu_id_array.sum(), dist_sum + abs(mu_id_array.sum() - nu_id_array.sum()) * edge_length
 
 
-def get_w1_distances(subfields_tree, df_prob_metric):
-
-    subfield1 = "2713"
-    subfield2 = "1904"
-    _, _, w1_max = get_dist_w1_tree(subfields_tree, {subfield1: 1}, {subfield2: 1})
+def get_w1_distances(subfields_tree, df_prob_metric, subfield_mode = True):
+    if subfield_mode:
+        subfield1 = "2713"
+        subfield2 = "1904"
+        _, _, w1_max = get_dist_w1_tree(subfields_tree, {subfield1: 1}, {subfield2: 1})
+    else:
+        subfield1 = "13"
+        subfield2 = "22"
+        _, _, w1_max = get_dist_w1_tree(subfields_tree, {subfield1: 1}, {subfield2: 1})
 
     country_list = df_prob_metric.index.to_list()
     country_dist_w1_world = np.full((len(country_list), len(country_list)), np.nan, dtype=float)
