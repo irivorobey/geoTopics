@@ -777,6 +777,15 @@ def get_cluster_dfs(cluster, df_country_subfield_norm_world_norm, df_map,):
     return df_top_subfields, df_individual_subfields, df_subfields_counted, df_fields_counted
 
 
+def get_jensen_shannon_distances(df_metric):
+    n_countries = len(df_metric.index)
+    dist_array = np.full((n_countries, n_countries), np.nan)
+    for i in range(n_countries):
+        for j in range(n_countries):
+            dist_array[i, j] = spd.jensenshannon(df_metric.iloc[i].fillna(0), df_metric.iloc[j].fillna(0))
+    return pd.DataFrame(dist_array, index=df_metric.index, columns=df_metric.index)
+
+
 def get_jaccard_distances(df_metric):
     n_countries = len(df_metric.index)
     dist_array = np.full((n_countries, n_countries), np.nan)
