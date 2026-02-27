@@ -1,0 +1,253 @@
+probability,subfield_name,field_name,domain_name
+0.008681909872096803,General Agricultural and Biological Sciences,Agricultural and Biological Sciences,Life Sciences
+0.0032283727964580447,Agronomy and Crop Science,Agricultural and Biological Sciences,Life Sciences
+0.002088194850622555,Animal Science and Zoology,Agricultural and Biological Sciences,Life Sciences
+0.004097304158957229,Aquatic Science,Agricultural and Biological Sciences,Life Sciences
+0.006283430468327755,"Ecology, Evolution, Behavior and Systematics",Agricultural and Biological Sciences,Life Sciences
+0.01233431578890689,Food Science,Agricultural and Biological Sciences,Life Sciences
+0.004442924805466392,Forestry,Agricultural and Biological Sciences,Life Sciences
+0.00020562240994849006,Horticulture,Agricultural and Biological Sciences,Life Sciences
+0.002724581065373119,Insect Science,Agricultural and Biological Sciences,Life Sciences
+0.01907543279983685,Plant Science,Agricultural and Biological Sciences,Life Sciences
+0.005832811144398085,Soil Science,Agricultural and Biological Sciences,Life Sciences
+0.0004169659016795077,General Arts and Humanities,Arts and Humanities,Social Sciences
+0.006299920645230334,History,Arts and Humanities,Social Sciences
+0.010721980328901627,Language and Linguistics,Arts and Humanities,Social Sciences
+0.008968973563890686,Archeology,Arts and Humanities,Social Sciences
+0.00106748655377514,Classics,Arts and Humanities,Social Sciences
+0.002466459316714376,Conservation,Arts and Humanities,Social Sciences
+0.003757404594230592,History and Philosophy of Science,Arts and Humanities,Social Sciences
+0.013621559189975587,Literature and Literary Theory,Arts and Humanities,Social Sciences
+0.001607287446667739,Museology,Arts and Humanities,Social Sciences
+0.0009049405243068573,Music,Arts and Humanities,Social Sciences
+0.009505072580335767,Philosophy,Arts and Humanities,Social Sciences
+0.0033623134170136897,Religious studies,Arts and Humanities,Social Sciences
+0.003448802712196606,Visual Arts and Performing Arts,Arts and Humanities,Social Sciences
+9.120077429793913e-05,Aging,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.000322736319379054,Biochemistry,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.0004418694341446276,Biophysics,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.0011573411911830725,Biotechnology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.0012512342392610248,Cancer Research,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.002026609087904758,Cell Biology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.0003853316847643554,Clinical Biochemistry,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.00016894017969581345,Developmental Biology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.000489320759517356,Endocrinology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.005213588174995103,Genetics,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.012072492163800628,Molecular Biology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.0007646057535236816,Molecular Medicine,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.0003691780420842776,Physiology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+3.7691832920181484e-05,Structural Biology,"Biochemistry, Genetics and Molecular Biology",Life Sciences
+0.013931507208899581,Accounting,"Business, Management and Accounting",Social Sciences
+0.0004667729666097475,Business and International Management,"Business, Management and Accounting",Social Sciences
+0.0057735811212378,Management Information Systems,"Business, Management and Accounting",Social Sciences
+0.002474199603831913,Management of Technology and Innovation,"Business, Management and Accounting",Social Sciences
+0.007246591413127393,Marketing,"Business, Management and Accounting",Social Sciences
+0.005595554517534442,Organizational Behavior and Human Resource Management,"Business, Management and Accounting",Social Sciences
+0.014788996407833708,Strategy and Management,"Business, Management and Accounting",Social Sciences
+0.00025374680376622177,"Tourism, Leisure and Hospitality Management","Business, Management and Accounting",Social Sciences
+0.00010365254053049909,Industrial relations,"Business, Management and Accounting",Social Sciences
+0.00017095938503082316,Bioengineering,Chemical Engineering,Physical Sciences
+0.0004129274910094882,Catalysis,Chemical Engineering,Physical Sciences
+5.11532018202463e-05,Chemical Health and Safety,Chemical Engineering,Physical Sciences
+6.932604983533381e-05,Filtration and Separation,Chemical Engineering,Physical Sciences
+0.0003217267167115491,Fluid Flow and Transfer Processes,Chemical Engineering,Physical Sciences
+0.00013932516811567084,Process Chemistry and Technology,Chemical Engineering,Physical Sciences
+0.001405366913166767,Analytical Chemistry,Chemistry,Physical Sciences
+0.00032610166160407017,Electrochemistry,Chemistry,Physical Sciences
+0.0012956567566312386,Inorganic Chemistry,Chemistry,Physical Sciences
+0.00299481804604192,Organic Chemistry,Chemistry,Physical Sciences
+0.0005226376475450165,Physical and Theoretical Chemistry,Chemistry,Physical Sciences
+0.0008564795962666239,Spectroscopy,Chemistry,Physical Sciences
+0.014235397611818544,Artificial Intelligence,Computer Science,Physical Sciences
+0.0028235221267885954,Computational Theory and Mathematics,Computer Science,Physical Sciences
+0.0003166787033740248,Computer Graphics and Computer-Aided Design,Computer Science,Physical Sciences
+0.005393970518255972,Computer Networks and Communications,Computer Science,Physical Sciences
+0.0033936110997063403,Computer Science Applications,Computer Science,Physical Sciences
+0.004121871157199847,Computer Vision and Pattern Recognition,Computer Science,Physical Sciences
+0.0004664364323872459,Hardware and Architecture,Computer Science,Physical Sciences
+0.0010028719830548287,Human-Computer Interaction,Computer Science,Physical Sciences
+0.043315992846628563,Information Systems,Computer Science,Physical Sciences
+0.0011465720960630208,Signal Processing,Computer Science,Physical Sciences
+0.0004304272705795725,Software,Computer Science,Physical Sciences
+8.884503474042779e-05,General Decision Sciences,Decision Sciences,Social Sciences
+0.00779850753803005,Information Systems and Management,Decision Sciences,Social Sciences
+0.002975299061136826,Management Science and Operations Research,Decision Sciences,Social Sciences
+0.0009510457127895793,"Statistics, Probability and Uncertainty",Decision Sciences,Social Sciences
+0.0017839679134810898,Atmospheric Science,Earth and Planetary Sciences,Physical Sciences
+0.0008436912958115623,Earth-Surface Processes,Earth and Planetary Sciences,Physical Sciences
+0.0005138877577599743,Geochemistry and Petrology,Earth and Planetary Sciences,Physical Sciences
+0.0022843943023409994,Geology,Earth and Planetary Sciences,Physical Sciences
+0.0022036260889406103,Geophysics,Earth and Planetary Sciences,Physical Sciences
+0.0016984882209656782,Oceanography,Earth and Planetary Sciences,Physical Sciences
+0.001224311501460895,Paleontology,Earth and Planetary Sciences,Physical Sciences
+0.00022345872374107594,Space and Planetary Science,Earth and Planetary Sciences,Physical Sciences
+0.002437180839356735,"General Economics, Econometrics and Finance","Economics, Econometrics and Finance",Social Sciences
+0.020698537354962163,Economics and Econometrics,"Economics, Econometrics and Finance",Social Sciences
+0.0022329045662982513,Finance,"Economics, Econometrics and Finance",Social Sciences
+0.00016119989257827618,General Energy,Energy,Physical Sciences
+0.0002621601593287623,Energy Engineering and Power Technology,Energy,Physical Sciences
+2.8941943135139356e-05,Fuel Technology,Energy,Physical Sciences
+1.0432560897550232e-05,Nuclear Energy and Engineering,Energy,Physical Sciences
+0.003673271038605187,"Renewable Energy, Sustainability and the Environment",Energy,Physical Sciences
+2.692273780012963e-06,General Engineering,Engineering,Physical Sciences
+0.0033794766623612723,Aerospace Engineering,Engineering,Physical Sciences
+0.0017769006948085558,Automotive Engineering,Engineering,Physical Sciences
+0.008682582940541807,Biomedical Engineering,Engineering,Physical Sciences
+0.00891983956740545,Civil and Structural Engineering,Engineering,Physical Sciences
+0.0026212650590651215,Computational Mechanics,Engineering,Physical Sciences
+0.004554317633114429,Control and Systems Engineering,Engineering,Physical Sciences
+0.013879007870189327,Electrical and Electronic Engineering,Engineering,Physical Sciences
+0.0026125151692800793,Industrial and Manufacturing Engineering,Engineering,Physical Sciences
+0.00647559150937618,Mechanical Engineering,Engineering,Physical Sciences
+0.0027205426547030993,Mechanics of Materials,Engineering,Physical Sciences
+0.002597034595045005,Ocean Engineering,Engineering,Physical Sciences
+0.0007821055330937658,"Safety, Risk, Reliability and Quality",Engineering,Physical Sciences
+0.001823678951736281,Media Technology,Engineering,Physical Sciences
+0.004113457801637306,Building and Construction,Engineering,Physical Sciences
+0.0003637934945242517,Architecture,Engineering,Physical Sciences
+0.00039340850610439427,Ecological Modeling,Environmental Science,Physical Sciences
+0.008468210640808275,Ecology,Environmental Science,Physical Sciences
+0.0012273403094634097,Environmental Chemistry,Environmental Science,Physical Sciences
+0.0023755950766389386,Environmental Engineering,Environmental Science,Physical Sciences
+0.004518308471306755,Global and Planetary Change,Environmental Science,Physical Sciences
+0.0030378944265221273,"Health, Toxicology and Mutagenesis",Environmental Science,Physical Sciences
+0.01423876295404356,"Management, Monitoring, Policy and Law",Environmental Science,Physical Sciences
+0.0028484256592537153,Nature and Landscape Conservation,Environmental Science,Physical Sciences
+0.0027218887915931057,Pollution,Environmental Science,Physical Sciences
+0.0035309170624870014,Waste Management and Disposal,Environmental Science,Physical Sciences
+0.0063362663412605096,Water Science and Technology,Environmental Science,Physical Sciences
+0.0004364848865846017,Applied Microbiology and Biotechnology,Immunology and Microbiology,Life Sciences
+0.002430786689129204,Immunology,Immunology and Microbiology,Life Sciences
+0.0007205197703759693,Microbiology,Immunology and Microbiology,Life Sciences
+0.001574643627085082,Parasitology,Immunology and Microbiology,Life Sciences
+0.0004203312439045239,Virology,Immunology and Microbiology,Life Sciences
+0.00018543035659839284,General Materials Science,Materials Science,Physical Sciences
+0.002554294748787299,Biomaterials,Materials Science,Physical Sciences
+0.00028134261001135465,Ceramics and Composites,Materials Science,Physical Sciences
+0.0011886388738757232,"Electronic, Optical and Magnetic Materials",Materials Science,Physical Sciences
+0.006586647802801715,Materials Chemistry,Materials Science,Physical Sciences
+0.00015345960546073891,Metals and Alloys,Materials Science,Physical Sciences
+0.0018169482672862486,Polymers and Plastics,Materials Science,Physical Sciences
+0.0003351880856116139,"Surfaces, Coatings and Films",Materials Science,Physical Sciences
+0.0005502334537901494,Algebra and Number Theory,Mathematics,Physical Sciences
+0.009024838244825955,Applied Mathematics,Mathematics,Physical Sciences
+3.197075113765394e-05,Computational Mathematics,Mathematics,Physical Sciences
+0.00024129503753366185,Discrete Mathematics and Combinatorics,Mathematics,Physical Sciences
+0.0015938260777676743,Geometry and Topology,Mathematics,Physical Sciences
+0.0016816615098405971,Mathematical Physics,Mathematics,Physical Sciences
+0.0010439291582000265,Modeling and Simulation,Mathematics,Physical Sciences
+0.00035706281007421924,Numerical Analysis,Mathematics,Physical Sciences
+0.00134580035578398,Statistics and Probability,Mathematics,Physical Sciences
+0.00026316976199626714,Theoretical Computer Science,Mathematics,Physical Sciences
+0.00022850673707860026,Anatomy,Medicine,Health Sciences
+0.0004405232972546211,Anesthesiology and Pain Medicine,Medicine,Health Sciences
+0.000828883790021491,Biochemistry,Medicine,Health Sciences
+0.004308647650688246,Cardiology and Cardiovascular Medicine,Medicine,Health Sciences
+0.0005960021080503697,Critical Care and Intensive Care Medicine,Medicine,Health Sciences
+0.0014857985923446542,Complementary and alternative medicine,Medicine,Health Sciences
+0.0016130085284502666,Dermatology,Medicine,Health Sciences
+0.0012455131574784972,Emergency Medicine,Medicine,Health Sciences
+0.0029312130779891137,"Endocrinology, Diabetes and Metabolism",Medicine,Health Sciences
+0.008265953573084801,Epidemiology,Medicine,Health Sciences
+0.00019384371216093335,Family Practice,Medicine,Health Sciences
+0.00047855166439730423,Gastroenterology,Medicine,Health Sciences
+0.0015207981514848226,Genetics,Medicine,Health Sciences
+0.0006131653533979524,Geriatrics and Gerontology,Medicine,Health Sciences
+8.009514495538566e-05,Health Informatics,Medicine,Health Sciences
+0.0015944991462126775,Hematology,Medicine,Health Sciences
+0.0008638833491616596,Hepatology,Medicine,Health Sciences
+0.00038162980831683754,Immunology and Allergy,Medicine,Health Sciences
+0.00037355298697679866,Internal Medicine,Medicine,Health Sciences
+0.005901127591565914,Infectious Diseases,Medicine,Health Sciences
+5.788388627027871e-05,Microbiology,Medicine,Health Sciences
+0.0010318139261899682,Nephrology,Medicine,Health Sciences
+0.0028490987276987186,Neurology,Medicine,Health Sciences
+0.001729785903658329,Obstetrics and Gynecology,Medicine,Health Sciences
+0.004333887717375868,Oncology,Medicine,Health Sciences
+0.0011795524498681795,Ophthalmology,Medicine,Health Sciences
+0.0015971914199926906,Orthopedics and Sports Medicine,Medicine,Health Sciences
+0.0005270125924375376,Otorhinolaryngology,Medicine,Health Sciences
+0.002843377645916191,Pathology and Forensic Medicine,Medicine,Health Sciences
+0.015269230743343522,"Pediatrics, Perinatology and Child Health",Medicine,Health Sciences
+0.0026821777533379146,Pharmacology,Medicine,Health Sciences
+0.004956812563226367,Physiology,Medicine,Health Sciences
+0.0025553043514548036,Psychiatry and Mental health,Medicine,Health Sciences
+0.012343065678691931,"Public Health, Environmental and Occupational Health",Medicine,Health Sciences
+0.0067266460393623885,Pulmonary and Respiratory Medicine,Medicine,Health Sciences
+0.003508032735356891,"Radiology, Nuclear Medicine and Imaging",Medicine,Health Sciences
+0.0009793145874797155,Rehabilitation,Medicine,Health Sciences
+0.0014457510198669613,Reproductive Medicine,Medicine,Health Sciences
+0.0024977569994070266,Rheumatology,Medicine,Health Sciences
+0.01086803618146733,Surgery,Medicine,Health Sciences
+0.0002190837788485549,Transplantation,Medicine,Health Sciences
+0.0008134032157864165,Urology,Medicine,Health Sciences
+0.00016927671391831506,Behavioral Neuroscience,Neuroscience,Life Sciences
+0.0001581710845757616,Biological Psychiatry,Neuroscience,Life Sciences
+0.0011432067538380045,Cellular and Molecular Neuroscience,Neuroscience,Life Sciences
+0.003355919266786159,Cognitive Neuroscience,Neuroscience,Life Sciences
+0.00017230552192082965,Developmental Neuroscience,Neuroscience,Life Sciences
+0.0004112448198969801,Endocrine and Autonomic Systems,Neuroscience,Life Sciences
+0.0008958541002993135,Neurology,Neuroscience,Life Sciences
+0.00042941766791206764,Sensory Systems,Neuroscience,Life Sciences
+0.0001961994517184447,"Issues, ethics and legal aspects",Nursing,Health Sciences
+4.3412914702709034e-05,Leadership and Management,Nursing,Health Sciences
+0.0030813073412248363,Nutrition and Dietetics,Nursing,Health Sciences
+3.331688802766042e-05,Research and Theory,Nursing,Health Sciences
+0.0006131653533979524,Pharmaceutical Science,"Pharmacology, Toxicology and Pharmaceutics",Life Sciences
+0.0010308043235224633,Pharmacology,"Pharmacology, Toxicology and Pharmaceutics",Life Sciences
+0.0003170152375965264,Toxicology,"Pharmacology, Toxicology and Pharmaceutics",Life Sciences
+6.663377605532085e-05,Acoustics and Ultrasonics,Physics and Astronomy,Physical Sciences
+0.002962174226459263,Astronomy and Astrophysics,Physics and Astronomy,Physical Sciences
+0.0007174909623734547,Condensed Matter Physics,Physics and Astronomy,Physical Sciences
+0.00010196986941799098,Instrumentation,Physics and Astronomy,Physical Sciences
+0.001722718684985795,Nuclear and High Energy Physics,Physics and Astronomy,Physical Sciences
+0.003124383721705044,"Atomic and Molecular Physics, and Optics",Physics and Astronomy,Physical Sciences
+0.0006145114902879589,Radiation,Physics and Astronomy,Physical Sciences
+0.0017092573160857301,Statistical and Nonlinear Physics,Physics and Astronomy,Physical Sciences
+9.793145874797154e-05,General Psychology,Psychology,Social Sciences
+0.000422013915017032,Applied Psychology,Psychology,Social Sciences
+0.010188237052014056,Clinical Psychology,Psychology,Social Sciences
+0.00532094259197312,Developmental and Educational Psychology,Psychology,Social Sciences
+0.0029530878024517193,Experimental and Cognitive Psychology,Psychology,Social Sciences
+0.00020966082061850953,Neuropsychology and Physiological Psychology,Psychology,Social Sciences
+0.005989299557861339,Social Psychology,Psychology,Social Sciences
+0.001986561515427065,General Social Sciences,Social Sciences,Social Sciences
+0.00039475464299440076,Archeology,Social Sciences,Social Sciences
+0.0015312307123823729,Development,Social Sciences,Social Sciences
+0.08391548144922405,Education,Social Sciences,Social Sciences
+0.004803016423543126,"Geography, Planning and Development",Social Sciences,Social Sciences
+0.003577358785192225,Health,Social Sciences,Social Sciences
+0.005647044253577191,Human Factors and Ergonomics,Social Sciences,Social Sciences
+0.02050637631391374,Law,Social Sciences,Social Sciences
+0.00010701788275551529,Library and Information Sciences,Social Sciences,Social Sciences
+0.0022800193574484783,Linguistics and Language,Social Sciences,Social Sciences
+0.0020535318257048876,Safety Research,Social Sciences,Social Sciences
+0.0772164312161068,Sociology and Political Science,Social Sciences,Social Sciences
+0.001151620109400545,Transportation,Social Sciences,Social Sciences
+0.008089946174716454,Anthropology,Social Sciences,Social Sciences
+0.003749327772890553,Communication,Social Sciences,Social Sciences
+0.010360206039712385,Cultural Studies,Social Sciences,Social Sciences
+0.022669954830376655,Demography,Social Sciences,Social Sciences
+0.004240667737742919,Gender Studies,Social Sciences,Social Sciences
+0.00038129327409433593,Life-span and Life-course Studies,Social Sciences,Social Sciences
+0.026534713841585265,Political Science and International Relations,Social Sciences,Social Sciences
+0.00035840894696422573,Public Administration,Social Sciences,Social Sciences
+0.010162996985326436,Urban Studies,Social Sciences,Social Sciences
+0.0001598537556882697,Equine,Veterinary,Health Sciences
+0.0010297947208549585,Small Animals,Veterinary,Health Sciences
+0.0005371086191125862,General Dentistry,Dentistry,Health Sciences
+0.0021692995982454453,Oral Surgery,Dentistry,Health Sciences
+0.0014060399816117702,Orthodontics,Dentistry,Health Sciences
+0.0015160866723697999,Periodontics,Dentistry,Health Sciences
+0.022823414435837394,General Health Professions,Health Professions,Health Sciences
+0.0003957642456619056,Complementary and Manual Therapy,Health Professions,Health Sciences
+0.0012021002427757882,Emergency Medical Services,Health Professions,Health Sciences
+0.0019216104104842525,Health Information Management,Health Professions,Health Sciences
+0.0003173517718190281,Medical Laboratory Technology,Health Professions,Health Sciences
+1.2115232010058335e-05,Medical Terminology,Health Professions,Health Sciences
+0.00502176366816918,Occupational Therapy,Health Professions,Health Sciences
+0.0008208069686814522,Pharmacy,Health Professions,Health Sciences
+0.0054494986649687395,"Physical Therapy, Sports Therapy and Rehabilitation",Health Professions,Health Sciences
+0.0009618148079096311,Radiological and Ultrasound Technology,Health Professions,Health Sciences
+0.0016059413097777326,Speech and Hearing,Health Professions,Health Sciences
+2.2211258685106947e-05,Drug Discovery,"Pharmacology, Toxicology and Pharmaceutics",Life Sciences

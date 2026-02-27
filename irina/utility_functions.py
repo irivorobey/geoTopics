@@ -51,6 +51,31 @@ def gini(x):
     return float((2 * np.sum(index * x) / (n * np.sum(x))) - (n + 1) / n)
 
 
+def dunn_index(df_dist, labels):
+    unique_labels = list(set(labels))
+    dist_array = df_dist.values
+    min_inter_cluster = 1
+    max_intra_cluster = 0
+    for i, label1 in enumerate(unique_labels):
+        label1_idx = labels == label1
+        if label1_idx.sum() < 2:
+            continue
+        intra_cluster = np.nanmax(dist_array[np.ix_(label1_idx, label1_idx)])
+        if intra_cluster > max_intra_cluster:
+            max_intra_cluster = intra_cluster
+        for label2, j in enumerate(unique_labels):
+            if i <= j:
+                continue
+            label2_idx = labels == label2
+            if label2_idx.sum() < 2:
+                continue
+            inter_cluster = np.nanmin(dist_array[np.ix_(label1_idx, label2_idx)])
+            if inter_cluster < min_inter_cluster:
+                min_inter_cluster = inter_cluster
+
+    return min_inter_cluster / max_intra_cluster
+
+
 def get_subfield_info(subfield_id: int, df_topics: pd.DataFrame = df_topics):
     return (
         df_topics
@@ -134,6 +159,79 @@ def update_quantiles(quantiles_thresholds, quantiles_pct=None):
     return labels, quantiles, quantiles_pct_upd
 
 
+def plot_map_discrete(
+    df,
+    column,
+    year="",
+    title="",
+    legend="",
+    country_column="alpha-3",
+    ax=None,
+    fig=None,
+    colors=None
+):
+
+    # Load world geometries
+    world = gpd.read_file(URL_WORLD)
+
+    # Merge
+    world = world.merge(
+        df,
+        left_on='ADM0_A3',
+        right_on=country_column,
+        how='left'
+    ).dropna(subset=[column])
+
+    # ----------------------------------
+    # Handle categories
+    # ----------------------------------
+    categories = sorted(world[column].unique())
+
+    if colors is None:
+        cmap = plt.cm.get_cmap("tab20c", len(categories))
+        colors = [cmap(i) for i in range(len(categories))]
+
+    color_dict = dict(zip(categories, colors))
+
+    world["color"] = world[column].map(color_dict)
+
+    # ----------------------------------
+    # Plot
+    # ----------------------------------
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(12, 6))
+
+    ax.clear()
+
+    world.plot(
+        color=world["color"],
+        edgecolor="black",
+        ax=ax
+    )
+
+    ax.set_title(f"{title} {year}")
+    ax.axis("off")
+
+    # ----------------------------------
+    # Create legend
+    # ----------------------------------
+    from matplotlib.patches import Patch
+
+    handles = [
+        Patch(color=color_dict[cat], label=str(cat))
+        for cat in categories
+    ]
+
+    ax.legend(
+        handles=handles,
+        title=legend,
+        loc="lower left",
+        frameon=True
+    )
+
+    return fig, ax
+
+
 def plot_map_continuous(df, column, year="", title="", legend="", country_column="alpha-3", range=None, ax=None, fig=None, animation=False, log=False):
         # ----------------------------
         # Load world geometries
@@ -142,10 +240,12 @@ def plot_map_continuous(df, column, year="", title="", legend="", country_column
         world = gpd.read_file(URL_WORLD)
 
         # Merge your data with geometries
+        # print("plot_map_continuous: merging data with geometries...")
+        # display(df)
         world = world.merge(df, left_on='ADM0_A3', right_on=country_column, how='left').dropna(subset=column)
 
-        # cmap = plt.cm.plasma
-        cmap = plt.cm.hsv
+        cmap = plt.cm.plasma
+        # cmap = plt.cm.hsv
         if range is None:
             vmin = world[column].min()
             vmax = world[column].max()
@@ -301,6 +401,31 @@ def plot_map_distribution(df, column, quantiles_pct, year,
     # plt.tight_layout()
 
     return df_map, ax_map, ax_hist
+
+
+def plot_heatmap(df, x_labels, y_labels, title="Heatmap", line_height=20, z_min=None, z_max=None, legend_label="Legend"):
+    fig, ax = plt.subplots(figsize=(17, 6))
+
+    # Set vmax to 0.02 to normalize colors
+    im = ax.imshow(df.loc[y_labels, x_labels].values, cmap='viridis', vmin=z_min, vmax=z_max, aspect='auto')
+
+    # Set y-ticks
+    ax.set_yticks(np.arange(len(y_labels)))
+    ax.set_yticklabels(y_labels, rotation=0)
+
+    # Optionally, set x-ticks similarly
+    ax.set_xticks(np.arange(len(x_labels)))
+    ax.set_xticklabels(x_labels, rotation=90)
+
+    # Add colorbar to interpret distances/probabilities
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label(legend_label)
+
+    # Title
+    ax.set_title(title)
+
+    plt.tight_layout()
+    plt.show()
 
 
 def plotly_heatmap(df, x_labels, y_labels,
@@ -675,12 +800,12 @@ def get_dist_w1_tree(tree, mu_dict, nu_dict):
             return mu_id_array.sum(), nu_id_array.sum(), dist_sum + abs(mu_id_array.sum() - nu_id_array.sum()) * edge_length
 
 
-def get_w1_distances(subfields_tree, df_prob_metric, subfield_mode = True):
-    if subfield_mode:
+def get_w1_distances(subfields_tree, df_prob_metric, subfield_mode = True, w1_max = None):
+    if subfield_mode and w1_max is None:
         subfield1 = "2713"
         subfield2 = "1904"
         _, _, w1_max = get_dist_w1_tree(subfields_tree, {subfield1: 1}, {subfield2: 1})
-    else:
+    elif w1_max is None:
         subfield1 = "13"
         subfield2 = "22"
         _, _, w1_max = get_dist_w1_tree(subfields_tree, {subfield1: 1}, {subfield2: 1})
@@ -778,6 +903,7 @@ def get_cluster_dfs(cluster, df_country_subfield_norm_world_norm, df_map,):
 
 
 def get_jensen_shannon_distances(df_metric):
+
     n_countries = len(df_metric.index)
     dist_array = np.full((n_countries, n_countries), np.nan)
     for i in range(n_countries):
@@ -786,29 +912,30 @@ def get_jensen_shannon_distances(df_metric):
     return pd.DataFrame(dist_array, index=df_metric.index, columns=df_metric.index)
 
 
-def get_jaccard_distances(df_metric):
+def get_jaccard_distances(df_metric, eps=1e-4):
     n_countries = len(df_metric.index)
     dist_array = np.full((n_countries, n_countries), np.nan)
     for i in range(n_countries):
         for j in range(n_countries):
-            dist_array[i, j] = spd.jaccard(df_metric.iloc[i].fillna(0) > 0, df_metric.iloc[j].fillna(0) > 0)
+            dist_array[i, j] = spd.jaccard(df_metric.iloc[i].fillna(0) > eps, df_metric.iloc[j].fillna(0) > eps)
     return pd.DataFrame(dist_array, index=df_metric.index, columns=df_metric.index)
 
 
-def get_jaccard(df, df1, df2, col_name="jaccard", col_df2=None):
+def get_jaccard(df, df1, df2, col_name="jaccard", col_df2=None, eps=1e-4):
     for c in df.index:
         if col_df2 is None:
             if (c in df1.index) and (c in df2.index):
-                df.loc[c, col_name] = spd.jaccard(df1.loc[c].fillna(0) > 0, df2.loc[c].fillna(0) > 0)
+                df.loc[c, col_name] = spd.jaccard(df1.loc[c].fillna(0) > eps, df2.loc[c].fillna(0) > eps)
             else:
                 df.loc[c, col_name] = 1
         else:
             if c in df1.index:
-                df.loc[c, col_name] = spd.jaccard(df1.loc[c] > 0, df2[col_df2] > 0)
+                df.loc[c, col_name] = spd.jaccard(df1.loc[c] > eps, df2[col_df2] > eps)
             else:
                 df.loc[c, col_name] = 1
 
 def get_w1_tree(df, subfield_tree, df1, df2=None, col_name="w1_tree", dict2=None, w1_max=None):
+
     if w1_max is None:
         subfield1 = "2713"
         subfield2 = "1904"
@@ -830,3 +957,182 @@ def get_w1_tree(df, subfield_tree, df1, df2=None, col_name="w1_tree", dict2=None
                 df.loc[c, col_name] = tmp / w1_max
             else:
                 df.loc[c, col_name] = 1
+
+
+def clean_clusters(df_map, df_map_prev, df_medoids=None, fixed_country_list=["US", "RU", "BR"]):
+    n_clusters = len(set(df_map.cluster))
+    n_clusters_prev = len(set(df_map_prev.cluster))
+
+    clusters = list(set(df_map.cluster))
+    clusters_prev = list(set(df_map_prev.cluster))
+
+    # transition_matrix = pd.crosstab(df_map_prev.cluster, df_map.cluster).values.T
+
+    clusters = sorted(
+    set(df_map.cluster).union(set(df_map_prev.cluster))
+)
+
+    transition_matrix = pd.crosstab(
+        df_map_prev.cluster,
+        df_map.cluster
+    ).reindex(index=clusters_prev, columns=clusters, fill_value=0)
+
+    transition_matrix = transition_matrix.values.T
+    cluster_dict = {}
+
+    for fixed_country in fixed_country_list:
+        if len(cluster_dict) == n_clusters_prev:
+            break
+        if fixed_country not in df_map.index:
+            continue
+        fixed_country_cluster = int(df_map.loc[fixed_country].cluster)
+
+        if fixed_country_cluster in cluster_dict:
+            continue
+        if fixed_country_list.index(fixed_country) >= n_clusters:
+            break
+        cluster_dict[fixed_country_cluster] = fixed_country_list.index(fixed_country)
+        transition_matrix[fixed_country_cluster, :] = -1
+        transition_matrix[:, fixed_country_list.index(fixed_country)] = -1
+    while len(cluster_dict) != min(n_clusters, n_clusters_prev):
+        i, j = np.unravel_index(transition_matrix.argmax(), transition_matrix.shape)
+        cluster_dict[int(i)] = int(j)
+        transition_matrix[i, :] = -1
+        transition_matrix[:, j] = -1
+    
+    idx_added = 1
+    if n_clusters != n_clusters_prev:
+        for cluster in range(n_clusters):
+            if cluster in cluster_dict.keys():
+                continue
+            else:
+                cluster_dict[cluster] = transition_matrix.shape[1] + idx_added
+                idx_added += 1
+    df_map.replace({"cluster": cluster_dict}, inplace=True)
+    if df_medoids is None:
+        return df_map, None
+    else:
+        df_medoids.replace({"cluster": cluster_dict}, inplace=True)
+        return df_map, df_medoids
+
+def get_cluster_probabilities(df_map, df_cs):
+    df_map_cs = (
+        df_map
+        .merge(df_cs, left_on="country", right_index=True)
+        .drop(columns=["country", "year"])
+        .groupby("cluster")
+        .sum()
+    ) 
+    return df_map_cs.div(df_map_cs.sum(axis=1), axis=0)
+
+
+def get_medoid_stats(df_map, df_medoids_clean, df_cs, df_dist):
+    n_countries = df_dist.country.nunique()
+    df_map_medoids = (
+        df_map
+        .groupby(["year", "cluster"], as_index=False)
+        .count()
+        .assign(countries_share=lambda df: df.country / n_countries)
+        .merge(df_medoids_clean, on=["year", "cluster"], how="left")
+    )
+    df_map_cs = (
+        df_map
+        .merge(df_cs, on=["country", "year"], how="left")
+        .drop(columns=["country"])
+        .groupby(["year", "cluster"])
+        .sum()
+        .sum(axis=1)
+        .to_frame("total_articles")
+        .reset_index()
+        .assign(total_articles_share=lambda df: df.total_articles / df.groupby("year")["total_articles"].transform("sum"))
+    )
+    df_map_dist = (
+        df_dist
+        .melt(id_vars=["year", "country"], var_name="country2", value_name="distance")
+        .merge(df_map, left_on=["year", "country"], right_on=["year", "country"], how="left")
+        .groupby(["year", "cluster"], as_index=False)
+        .agg(mean_distance = ("distance", "mean"))
+    )
+    df_map_transition = (
+        df_map.sort_values(["country", "year"])
+        .assign(
+            prev_cluster = lambda df: df.groupby("country")["cluster"].shift(1),
+            stayed = lambda df: df["cluster"] == df["prev_cluster"]
+        )
+    )
+    df_stayed = (
+        df_map_transition[df_map_transition["stayed"]]
+        .groupby(["year", "cluster"])
+        .size()
+        .reset_index(name="n_stayed")
+    )
+
+    df_stats = (
+        df_map_medoids
+        .merge(df_map_cs, on=["year", "cluster"], how="left")
+        .merge(df_map_dist, on=["year", "cluster"], how="left")
+        .merge(df_stayed, on=["year", "cluster"], how="left")
+    )
+
+    return df_stats
+
+def cap_and_redistribute(p, cap, year):
+    p = np.array(p, dtype=float)
+    
+    # Step 1: cap
+    excess = np.maximum(p - cap, 0)
+    p_capped = np.minimum(p, cap)
+    
+    total_excess = excess.sum()
+    
+    # Step 2: redistribute excess uniformly
+    n = len(p)
+    
+    
+    df_global = pd.read_csv(PATH+"df_stats_subfields_global_yearly.csv").query("year == @year")
+    df_global.subfield_id = df_global.subfield_id.astype(str)
+    df_global = (
+        df_global
+        .drop_duplicates()
+        .set_index("subfield_id")
+        [["probability_individual"]]
+        .T
+    )
+    p_new = p_capped + df_global.iloc[0] / total_excess
+    # Step 3: renormalize (numerical safety)
+    p_new /= p_new.sum()
+    return p_new
+
+def df_capped(df, cap, year):
+    df_capped = df.copy()
+    for i in df.index:
+        df_capped.loc[i] = cap_and_redistribute(df.fillna(0).loc[i], cap, year)
+    return df_capped
+
+def get_cluster_data(labels, medoids, df_dist, df_cs):
+    subfield_tree = get_subfield_tree(df_topics)
+
+    df_map = (
+        df_dist
+        .merge(df_country[["alpha-2", "alpha-3", "name", "region", "sub-region"]], left_index=True, right_on="alpha-2", how="left")
+        [["alpha-2", "alpha-3", "name", "sub-region", "region"]]
+        .assign(cluster=labels,
+                cluster_str = lambda df: df["cluster"].astype(str))
+        .rename(columns={"alpha-3": "country3", "alpha-2": "country"})
+        .merge(df_cs.sum(axis=1).to_frame("total_articles"), left_on="country", right_index=True, how="left")
+    )
+
+    df_cluster_subfields = (
+        df_cs
+        .merge(df_map[["country", "cluster_str"]], left_index=True, right_on="country", how="left")
+        .drop("country", axis=1)
+        .groupby("cluster_str")
+        .sum()
+    )
+    df_prob_clusters = df_cluster_subfields.div(df_cluster_subfields.sum(axis=1), axis=0)
+
+    df_prob_medoids = df_cs.loc[medoids].div(df_cs.loc[medoids].sum(axis=1), axis=0)
+
+    df_dist_clusters = get_w1_distances(subfield_tree, df_prob_clusters)
+
+    return df_map, df_prob_clusters, df_dist_clusters, df_prob_medoids
