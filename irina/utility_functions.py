@@ -1025,6 +1025,55 @@ def get_cluster_probabilities(df_map, df_cs):
     ) 
     return df_map_cs.div(df_map_cs.sum(axis=1), axis=0)
 
+def get_cluster_stats(df_map, df_cs, df_dist):
+    n_countries = df_dist.country.nunique()
+    df_map_countries = (
+        df_map
+        .groupby(["year", "cluster"], as_index=False)
+        .count()
+        .assign(countries_share=lambda df: df.country / n_countries)
+    )
+    df_map_cs = (
+        df_map
+        .merge(df_cs, on=["country", "year"], how="left")
+        .drop(columns=["country"])
+        .groupby(["year", "cluster"])
+        .sum()
+        .sum(axis=1)
+        .to_frame("total_articles")
+        .reset_index()
+        .assign(total_articles_share=lambda df: df.total_articles / df.groupby("year")["total_articles"].transform("sum"))
+    )
+    df_map_dist = (
+        df_dist
+        .melt(id_vars=["year", "country"], var_name="country2", value_name="distance")
+        .merge(df_map, left_on=["year", "country"], right_on=["year", "country"], how="left")
+        .groupby(["year", "cluster"], as_index=False)
+        .agg(mean_distance = ("distance", "mean"))
+    )
+    df_map_transition = (
+        df_map.sort_values(["country", "year"])
+        .assign(
+            prev_cluster = lambda df: df.groupby("country")["cluster"].shift(1),
+            stayed = lambda df: df["cluster"] == df["prev_cluster"]
+        )
+    )
+    df_stayed = (
+        df_map_transition[df_map_transition["stayed"]]
+        .groupby(["year", "cluster"])
+        .size()
+        .reset_index(name="n_stayed")
+    )
+
+    df_stats = (
+        df_map_countries
+        .merge(df_map_cs, on=["year", "cluster"], how="left")
+        .merge(df_map_dist, on=["year", "cluster"], how="left")
+        .merge(df_stayed, on=["year", "cluster"], how="left")
+    )
+
+    return df_stats
+
 
 def get_medoid_stats(df_map, df_medoids_clean, df_cs, df_dist):
     n_countries = df_dist.country.nunique()
