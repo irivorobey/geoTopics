@@ -168,7 +168,9 @@ def plot_map_discrete(
     country_column="alpha-3",
     ax=None,
     fig=None,
-    colors=None
+    colors=None,
+    max_values=None,
+    labels=None
 ):
 
     # Load world geometries
@@ -186,10 +188,14 @@ def plot_map_discrete(
     # Handle categories
     # ----------------------------------
     categories = sorted(world[column].unique())
-
+    if labels is None:
+        labels = categories
+    if max_values is None:
+        max_values = len(categories)
+    
     if colors is None:
-        cmap = plt.cm.get_cmap("tab20c", len(categories))
-        colors = [cmap(i) for i in range(len(categories))]
+        cmap = plt.cm.get_cmap("tab20c", max_values)
+        colors = [cmap(int(i)) for i in categories]
 
     color_dict = dict(zip(categories, colors))
 
@@ -218,8 +224,8 @@ def plot_map_discrete(
     from matplotlib.patches import Patch
 
     handles = [
-        Patch(color=color_dict[cat], label=str(cat))
-        for cat in categories
+        Patch(color=colors[i], label=labels[i])
+        for i, _ in enumerate(categories)
     ]
 
     ax.legend(
