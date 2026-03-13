@@ -974,9 +974,9 @@ def clean_clusters(df_map, df_map_prev, df_medoids=None, fixed_country_list=["US
 
     # transition_matrix = pd.crosstab(df_map_prev.cluster, df_map.cluster).values.T
 
-    clusters = sorted(
-    set(df_map.cluster).union(set(df_map_prev.cluster))
-)
+    # clusters = sorted(
+    #     set(df_map.cluster).union(set(df_map_prev.cluster))
+    # )
 
     transition_matrix = pd.crosstab(
         df_map_prev.cluster,
@@ -998,13 +998,14 @@ def clean_clusters(df_map, df_map_prev, df_medoids=None, fixed_country_list=["US
         if fixed_country_list.index(fixed_country) >= n_clusters:
             break
         cluster_dict[fixed_country_cluster] = fixed_country_list.index(fixed_country)
-        transition_matrix[fixed_country_cluster, :] = -1
-        transition_matrix[:, fixed_country_list.index(fixed_country)] = -1
+        transition_matrix[fixed_country_cluster, :] = -10
+        transition_matrix[:, fixed_country_list.index(fixed_country)] = -10
+
     while len(cluster_dict) != min(n_clusters, n_clusters_prev):
         i, j = np.unravel_index(transition_matrix.argmax(), transition_matrix.shape)
         cluster_dict[int(i)] = int(j)
-        transition_matrix[i, :] = -1
-        transition_matrix[:, j] = -1
+        transition_matrix[i, :] = -10
+        transition_matrix[:, j] = -10
     
     idx_added = 1
     if n_clusters != n_clusters_prev:
@@ -1014,6 +1015,7 @@ def clean_clusters(df_map, df_map_prev, df_medoids=None, fixed_country_list=["US
             else:
                 cluster_dict[cluster] = transition_matrix.shape[1] + idx_added
                 idx_added += 1
+
     df_map.replace({"cluster": cluster_dict}, inplace=True)
     if df_medoids is None:
         return df_map, None
