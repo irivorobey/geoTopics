@@ -7,6 +7,8 @@ from IPython.core.display_functions import display
 from matplotlib.patches import Patch
 import matplotlib as mpl
 import scipy.spatial.distance as spd
+from scipy.optimize import minimize
+from scipy.special import softmax
 
 from sklearn.metrics.pairwise import cosine_distances
 
@@ -30,6 +32,13 @@ df_topics=pd.read_csv(PATH+'Floriana_topic_mapping.csv')
 df_topics['topic_id']=df_topics['topic_id'].apply(lambda x: 'T'+str(x))
 id2field_topic=dict(zip(df_topics['subfield_id'],df_topics['field_name']))
 id2subfield_topic=dict(zip(df_topics['subfield_id'],df_topics['subfield_name']))
+
+import warnings
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    
+    # your code here
 
 def gini(x):
     x = np.asarray(x.dropna(), dtype=float)
@@ -413,7 +422,7 @@ def plot_heatmap(df, x_labels, y_labels, title="Heatmap", line_height=20, z_min=
     fig, ax = plt.subplots(figsize=(17, 6))
 
     # Set vmax to 0.02 to normalize colors
-    im = ax.imshow(df.loc[y_labels, x_labels].values, cmap='viridis', vmin=z_min, vmax=z_max, aspect='auto')
+    im = ax.imshow(df.loc[y_labels, x_labels].values, cmap='Blues', vmin=z_min, vmax=z_max, aspect='auto')
 
     # Set y-ticks
     ax.set_yticks(np.arange(len(y_labels)))
@@ -1193,3 +1202,108 @@ def get_cluster_data(labels, medoids, df_dist, df_cs):
     df_dist_clusters = get_w1_distances(subfield_tree, df_prob_clusters)
 
     return df_map, df_prob_clusters, df_dist_clusters, df_prob_medoids
+
+
+def get_wass_array(df_sf, weight_list = [1, 0.1, 0.01]):
+    n_sf = df_sf.subfield_id.nunique()
+    sf_sorted = df_sf.subfield_id.to_list()
+
+    n_fields = df_sf.field_id.nunique()
+    fields_sorted = df_sf.field_id.drop_duplicates().to_list()
+
+    n_domains = df_sf.domain_id.nunique()
+    domains_sorted = df_sf.domain_id.drop_duplicates().to_list()
+
+    adj_matrix_size = 1 + n_domains + n_fields + n_sf
+    adj_int_size = 1 + n_domains + n_fields
+
+    adj_matrix = np.zeros((adj_matrix_size, adj_matrix_size))
+
+    # add root -- domain
+    adj_matrix[0, range(1, n_domains+1)] = 1
+
+    # add domain -- field
+    for i, domain in enumerate(domains_sorted):
+        fields_list = df_sf.query("domain_id == @domain").field_id.drop_duplicates().to_list()
+        fields_idx = [1 + n_domains + fields_sorted.index(f) for f in fields_list]
+        adj_matrix[1 + i, fields_idx] = 1
+
+    # add field -- subfield
+    for i, field in enumerate(fields_sorted):
+        sf_list = df_sf.query("field_id == @field").subfield_id.drop_duplicates().to_list()
+        sf_idx = [adj_int_size + sf_sorted.index(sf) for sf in sf_list]
+        adj_matrix[1 + n_domains + i, sf_idx] = 1
+
+    adj_int = adj_matrix[:1+n_domains+n_fields, :1+n_domains+n_fields]
+    adj_leaves = adj_matrix[:1+n_domains+n_fields, 1+n_domains+n_fields:]
+
+    q11 = np.linalg.inv(np.eye(adj_int_size) - adj_int)
+    q12 = np.matmul(q11, adj_leaves)
+    q21 = np.zeros((n_sf, adj_int_size))
+    q22 = np.eye(q12.shape[1])
+
+    r1 = np.concatenate([q11, q12], axis=1)
+    r2 = np.concatenate([q21, q22], axis=1)
+    wass_array = np.concatenate([r1, r2])
+
+    weights = np.array([0] + [weight_list[0]]*n_domains + [weight_list[1]]*n_fields + [weight_list[2]]*n_sf).T
+    return np.tile(weights, (wass_array.shape[1], 1)).T * wass_array, adj_int_size
+
+
+def get_w1_distance_matrix(mu_vector, nu_vector, wass_array):
+    return np.sum(np.abs(wass_array @ (mu_vector - nu_vector)))
+
+
+def project_simplex(v):
+    """Project vector v onto the probability simplex."""
+    n = len(v)
+    u = np.sort(v)[::-1]
+    cssv = np.cumsum(u)
+    rho = np.nonzero(u * np.arange(1, n + 1) > (cssv - 1))[0][-1]
+    theta = (cssv[rho] - 1) / (rho + 1)
+    return np.maximum(v - theta, 0)
+
+
+def objective_function(mu, wass_array, wass_list):
+    return np.sum(np.sum(np.abs(np.tile(wass_array @ mu, (wass_list.shape[1], 1)).T - wass_list), axis=0))
+
+
+# --- Objective wrapper (with simplex projection inside) ---
+def objective_projected(x, wass_array, wass_list):
+    """Project x onto simplex before evaluating — ensures valid distribution."""
+    p = project_simplex(x)
+    return objective_function(p, wass_array, wass_list)
+
+
+def objective_softmax(x, wass_array_short, wass_list):
+    p = softmax(x)  # always a valid distribution, no need to project
+    return objective_projected(p, wass_array_short, wass_list)
+
+
+def get_barycenter(mu_list, wass_array_short):
+    wass_list = wass_array_short @ mu_list.T
+    result = minimize(
+        fun=objective_softmax,
+        x0=np.zeros(mu_list.shape[1]),   # softmax(zeros) = uniform, same starting point
+        args=(wass_array_short, wass_list),
+        method="L-BFGS-B",
+        options={
+            "maxiter": 5000,
+            "ftol": 1e-9,   # tolerance on f(x)
+            "gtol": 1e-6,   # tolerance on gradient norm
+            "disp": False,
+        }
+    )
+    return softmax(result.x)
+
+
+def get_w1_barycenter(df_prob):
+    df_sf = df_topics[["subfield_id", "field_id", "domain_id"]].drop_duplicates().sort_values(["domain_id", "field_id", "subfield_id"])
+    df_prob = df_prob.T.loc[df_sf.subfield_id.astype(str)].T
+
+    n_subfields = len(df_sf.index)
+
+    wass_array, n_int = get_wass_array(df_sf)
+    wass_array_short = wass_array[:, n_int:]
+
+    return pd.json_normalize(dict(zip(df_prob.columns, get_barycenter(df_prob.values, wass_array_short))))
