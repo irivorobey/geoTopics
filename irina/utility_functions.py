@@ -1298,12 +1298,18 @@ def get_barycenter(mu_list, wass_array_short):
 
 
 def get_w1_barycenter(df_prob):
-    df_sf = df_topics[["subfield_id", "field_id", "domain_id"]].drop_duplicates().sort_values(["domain_id", "field_id", "subfield_id"])
-    df_prob = df_prob.T.loc[df_sf.subfield_id.astype(str)].T
-
-    n_subfields = len(df_sf.index)
+    df_prob_clear = df_prob.dropna(how="all", axis=1).fillna(0)
+    subfield_list = df_prob_clear.columns.astype(int).to_list()
+    df_sf = (
+        df_topics
+        [["subfield_id", "field_id", "domain_id"]]
+        .query("subfield_id in @subfield_list")
+        .drop_duplicates()
+        .sort_values(["domain_id", "field_id", "subfield_id"])
+    )
+    df_prob_clear = df_prob_clear.T.loc[df_sf.subfield_id.astype(str)].T
 
     wass_array, n_int = get_wass_array(df_sf)
     wass_array_short = wass_array[:, n_int:]
 
-    return pd.json_normalize(dict(zip(df_prob.columns, get_barycenter(df_prob.values, wass_array_short))))
+    return pd.json_normalize(dict(zip(df_prob_clear.columns, get_barycenter(df_prob_clear.values, wass_array_short))))
