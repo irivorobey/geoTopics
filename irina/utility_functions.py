@@ -35,6 +35,8 @@ id2subfield_topic=dict(zip(df_topics['subfield_id'],df_topics['subfield_name']))
 
 import warnings
 
+# warnings.ignore("RuntimeWarning")
+
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
     
@@ -418,11 +420,13 @@ def plot_map_distribution(df, column, quantiles_pct, year,
     return df_map, ax_map, ax_hist
 
 
-def plot_heatmap(df, x_labels, y_labels, title="Heatmap", line_height=20, z_min=None, z_max=None, legend_label="Legend"):
+def plot_heatmap(df, x_labels, y_labels, title="Heatmap", line_height=20, z_min=None, z_max=None, legend_label="Legend", colorscale="symm"):
     fig, ax = plt.subplots(figsize=(17, 6))
 
     # Set vmax to 0.02 to normalize colors
-    im = ax.imshow(df.loc[y_labels, x_labels].values, cmap='Blues', vmin=z_min, vmax=z_max, aspect='auto')
+    # cmap = "Reds" /
+    cmap = "RdBu" if colorscale == "symm" else "Reds"
+    im = ax.imshow(df.loc[y_labels, x_labels].values, cmap=cmap, vmin=z_min, vmax=z_max, aspect='auto')
 
     # Set y-ticks
     ax.set_yticks(np.arange(len(y_labels)))
@@ -451,7 +455,7 @@ def plotly_heatmap(df, x_labels, y_labels,
     if colorscale == "symmetric":
         colorscale = "RdBu"
     else:
-        colorscale = "Blues"
+        colorscale = "Reds"
 
     customdata = np.empty(
         (len(y_labels), len(x_labels), 2),
@@ -1313,3 +1317,55 @@ def get_w1_barycenter(df_prob):
     wass_array_short = wass_array[:, n_int:]
 
     return pd.json_normalize(dict(zip(df_prob_clear.columns, get_barycenter(df_prob_clear.values, wass_array_short))))
+
+
+def get_w1_distances_matrix(df1, df2):
+    subfield1 = "2713"
+    subfield2 = "1904"
+    _, _, w1_max = get_dist_w1_tree(get_subfield_tree(df_topics), {subfield1: 1}, {subfield2: 1})
+
+    df1_aligned, df2_aligned = df1.align(df2, join="outer", axis=1)
+    df1_aligned = df1_aligned.fillna(0)
+    df2_aligned = df2_aligned.fillna(0)
+
+    df_sf = (
+        df_topics
+        [["subfield_id", "field_id", "domain_id"]]
+        .drop_duplicates()
+        .sort_values(["domain_id", "field_id", "subfield_id"])
+    )
+    wass_array, n_int = get_wass_array(df_sf)
+    wass_array_short = wass_array[:, n_int:]
+
+    df_cross = (
+        df1_aligned
+        .merge(df2_aligned, how="cross")
+    )
+
+    index_list = []
+    for df1_index in df1_aligned.index:
+        for df2_index in df2_aligned.index:
+            index_list.append(str(df1_index)+" "+str(df2_index))
+
+    cols = df1_aligned.columns
+    df_diff = pd.DataFrame(
+        df_cross[[c + "_x" for c in cols]].values
+        - df_cross[[c + "_y" for c in cols]].values,
+        columns=cols, index=index_list
+    )
+
+    df_diff = df_diff.dropna(how="all", axis=1)
+
+    return (
+        pd.DataFrame(
+            np.sum(np.abs(wass_array_short @ df_diff.fillna(0).values.T), axis=0),
+            index=df_diff.index,
+            columns=["dist"]
+        )
+        .assign(
+            idx1 = lambda df: [idx.split(" ")[0] for idx in df.index],
+            idx2 = lambda df: [idx.split(" ")[1] for idx in df.index],
+            dist_norm = lambda df: df.dist / w1_max
+        )
+        .pivot(index="idx1", columns="idx2", values="dist_norm")
+    )
