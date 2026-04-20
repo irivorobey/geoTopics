@@ -261,7 +261,7 @@ def plot_map_continuous(df, column, year="", title="", legend="", country_column
         # display(df)
         world = world.merge(df, left_on='ADM0_A3', right_on=country_column, how='left').dropna(subset=column)
 
-        cmap = plt.cm.plasma
+        cmap = plt.cm.RdBu
         # cmap = plt.cm.hsv
         if range is None:
             vmin = world[column].min()
@@ -1327,6 +1327,8 @@ def get_w1_distances_matrix(df1, df2):
     df1_aligned, df2_aligned = df1.align(df2, join="outer", axis=1)
     df1_aligned = df1_aligned.fillna(0)
     df2_aligned = df2_aligned.fillna(0)
+    # print(len(df1_aligned.index))
+    # print(len(df2_aligned.index))
 
     df_sf = (
         df_topics
@@ -1334,6 +1336,11 @@ def get_w1_distances_matrix(df1, df2):
         .drop_duplicates()
         .sort_values(["domain_id", "field_id", "subfield_id"])
     )
+
+    df1_aligned = df1_aligned.T.reindex(df_sf.subfield_id.astype(str)).T
+    df2_aligned = df2_aligned.T.reindex(df_sf.subfield_id.astype(str)).T
+    # print(len(df1_aligned.index))
+    # print(len(df2_aligned.index))
     wass_array, n_int = get_wass_array(df_sf)
     wass_array_short = wass_array[:, n_int:]
 
@@ -1341,11 +1348,13 @@ def get_w1_distances_matrix(df1, df2):
         df1_aligned
         .merge(df2_aligned, how="cross")
     )
+    # print(len(df_cross.columns))
 
     index_list = []
     for df1_index in df1_aligned.index:
         for df2_index in df2_aligned.index:
             index_list.append(str(df1_index)+" "+str(df2_index))
+    # print(len(index_list))
 
     cols = df1_aligned.columns
     df_diff = pd.DataFrame(
@@ -1354,8 +1363,10 @@ def get_w1_distances_matrix(df1, df2):
         columns=cols, index=index_list
     )
 
-    df_diff = df_diff.dropna(how="all", axis=1)
 
+    # df_diff = df_diff.dropna(how="all", axis=1)
+    # print(wass_array_short.shape)
+    # print(df_diff.fillna(0).values.T.shape)
     return (
         pd.DataFrame(
             np.sum(np.abs(wass_array_short @ df_diff.fillna(0).values.T), axis=0),
