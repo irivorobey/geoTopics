@@ -767,7 +767,7 @@ def get_field_tree(df: pd.DataFrame = df_topics, dist_list: list = [1, 0.1]):
     return subfields_tree
 
 
-def get_subfield_tree(df: pd.DataFrame = df_topics, dist_list: list = [1, 0.1, 0.01]):
+def get_subfield_tree(df: pd.DataFrame = df_topics, dist_list: list = [0.1, 0.01, 0.001]):
     domain_id_list = df.domain_id.drop_duplicates().sort_values().to_list()
     domain_list = []
     for domain in domain_id_list:
@@ -1208,7 +1208,7 @@ def get_cluster_data(labels, medoids, df_dist, df_cs):
     return df_map, df_prob_clusters, df_dist_clusters, df_prob_medoids
 
 
-def get_wass_array(df_sf, weight_list = [1, 0.1, 0.01]):
+def get_wass_array(df_sf, weight_list = [0.1, 0.01, 0.001]):
     n_sf = df_sf.subfield_id.nunique()
     sf_sorted = df_sf.subfield_id.to_list()
 
@@ -1241,6 +1241,7 @@ def get_wass_array(df_sf, weight_list = [1, 0.1, 0.01]):
     adj_int = adj_matrix[:1+n_domains+n_fields, :1+n_domains+n_fields]
     adj_leaves = adj_matrix[:1+n_domains+n_fields, 1+n_domains+n_fields:]
 
+
     q11 = np.linalg.inv(np.eye(adj_int_size) - adj_int)
     q12 = np.matmul(q11, adj_leaves)
     q21 = np.zeros((n_sf, adj_int_size))
@@ -1250,7 +1251,8 @@ def get_wass_array(df_sf, weight_list = [1, 0.1, 0.01]):
     r2 = np.concatenate([q21, q22], axis=1)
     wass_array = np.concatenate([r1, r2])
 
-    weights = np.array([0] + [weight_list[0]]*n_domains + [weight_list[1]]*n_fields + [weight_list[2]]*n_sf).T
+    weights = np.array([1] + [weight_list[0]]*n_domains + [weight_list[1]]*n_fields + [weight_list[2]]*n_sf).T
+    print(weights)
     return np.tile(weights, (wass_array.shape[1], 1)).T * wass_array, adj_int_size
 
 
@@ -1323,6 +1325,7 @@ def get_w1_distances_matrix(df1, df2):
     subfield1 = "2713"
     subfield2 = "1904"
     _, _, w1_max = get_dist_w1_tree(get_subfield_tree(df_topics), {subfield1: 1}, {subfield2: 1})
+    print(w1_max)
 
     df1_aligned, df2_aligned = df1.align(df2, join="outer", axis=1)
     df1_aligned = df1_aligned.fillna(0)
