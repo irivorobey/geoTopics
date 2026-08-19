@@ -1252,7 +1252,7 @@ def get_wass_array(df_sf, weight_list = [0.1, 0.01, 0.001]):
     wass_array = np.concatenate([r1, r2])
 
     weights = np.array([1] + [weight_list[0]]*n_domains + [weight_list[1]]*n_fields + [weight_list[2]]*n_sf).T
-    print(weights)
+    # print(weights)
     return np.tile(weights, (wass_array.shape[1], 1)).T * wass_array, adj_int_size
 
 
@@ -1325,7 +1325,7 @@ def get_w1_distances_matrix(df1, df2):
     subfield1 = "2713"
     subfield2 = "1904"
     _, _, w1_max = get_dist_w1_tree(get_subfield_tree(df_topics), {subfield1: 1}, {subfield2: 1})
-    print(w1_max)
+    # print(w1_max)
 
     df1_aligned, df2_aligned = df1.align(df2, join="outer", axis=1)
     df1_aligned = df1_aligned.fillna(0)

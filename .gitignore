@@ -1,2 +1,9 @@
 *.mp4
+*.jpg
+*.png
+*.svg
 .DS_Store
+images/
+data/
+data_clean/
+irina/

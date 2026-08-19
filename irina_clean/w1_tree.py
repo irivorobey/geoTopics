@@ -4,13 +4,14 @@ from typing import Optional, List
 
 np.seterr(divide='ignore', over='ignore', invalid='ignore')
 
-class W1TreeDistance():
+class W1Tree():
 
     def __init__(
             self,
             df_tree: pd.DataFrame,
             level_columns: Optional[List[str]] = None,
             weight_list: Optional[List[float]] = None,
+            weight_base = 10.0,
             norm: float = 1
         ):
 
@@ -56,16 +57,30 @@ class W1TreeDistance():
         self._df_tree = df_tree_root[self.level_columns].sort_values(self.level_columns)
 
         if weight_list is None:
-            a = norm / (2 * (1 / (10 ** np.arange(len(self._level_columns))))[1:].sum())
-            self._weight_list = a * (10.0 ** np.arange(0, -len(self._level_columns), -1))
+            a = norm / (2 * (1 / (weight_base ** np.arange(len(self._level_columns))))[1:].sum())
+            self._weight_list = a * (weight_base ** np.arange(0, -len(self._level_columns), -1))
+            # self._weight_list = a * (weight_base ** np.arange(0, len(self._level_columns), 1))
         else:
             # TODO: check size (the same as level_list)
             self._weight_list = weight_list
-        
+    
         self._adjacency_matrix = self.get_tree_adjacency_matrix()
         self.__distance_matrix = self.__get_distance_matrix()
         
         return
+
+    @property
+    def distance_matrix(self):
+        """
+        Wasserstein distance transformation matrix.
+
+        Returns
+        -------
+        np.ndarray
+            Matrix used to transform differences of leaf distributions into 
+            Wasserstein distances.
+        """
+        return self.__distance_matrix
 
     @property
     def level_columns(self):
@@ -268,6 +283,95 @@ class W1TreeDistance():
         dist_array = np.sum((np.abs(self.__distance_matrix[:, -self._n_leaves:] @ diff_array.T)), axis=0)
         return pd.DataFrame(dist_array,
                             index=m_index,
-                            columns=["distance"]).reset_index().pivot(index="first", columns="second")
+                            columns=["distance"]).reset_index().pivot(index="first", columns="second").droplevel(0, axis=1)
 
+    def project_to_simplex(self, v):
+        """
+        Euclidean projection of v onto the probability simplex:
+            {x : x >= 0, sum(x) = 1}
+        """
+        v = v.flatten()
+        n = len(v)
+        u = np.sort(v)[::-1]  # sort descending
+        cssv = np.cumsum(u)
 
+        rho = np.nonzero(u * np.arange(1, n + 1) > (cssv - 1))[0][-1]
+        theta = (cssv[rho] - 1) / (rho + 1)
+
+        w = np.maximum(v - theta, 0)
+        return np.array([w]).T
+
+    def barycenter(self,
+                   df: pd.DataFrame,
+                   init_step_size: Optional[float] = 0.6,
+                   step_size_decay: Optional[float] = 0.2,
+                   max_iter: Optional[int] = 1000
+                   ):
+        """
+        Compute the Wasserstein-1 barycenter of a set of distributions.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame of distributions with rows corresponding to observations 
+            and columns corresponding to leaf nodes.
+
+        Returns
+        -------
+        pd.Series
+            Series representing the barycenter distribution over the leaves.
+
+        Notes
+        -----
+        - The input dataframe is aligned to the tree leaves; missing values are 
+        filled with zeros.
+
+        - The barycenter is computed as the mean of the transformed distributions 
+        in the Wasserstein space.
+        """
+        df_aligned = df.T.reindex(self.ordered_leaves).T
+
+        n_distributions = df_aligned.index.size
+        if n_distributions == 1:
+            return df_aligned
+
+        mask = df_aligned.notna().sum(axis=0).astype(bool).values
+        mask_long = np.concatenate([np.array([True] * (self._n_by_levels.sum() - self._n_leaves)), mask])
+        
+        df_aligned = df_aligned.dropna(how="all", axis=1).fillna(0)
+
+        b_matrix = self.__distance_matrix[:, -self._n_leaves:][mask_long, :][:, mask]
+        b_vector = b_matrix @ df_aligned.values.T
+
+        # a_step = np.ones((mask.sum(), 1)) / mask.sum()
+        # a_step = np.array([df_aligned.iloc[1].values]).T
+        a_step = np.mean(df_aligned.values, axis=0).reshape(-1, 1)
+        a_step = self.project_to_simplex(a_step)
+        a_best = a_step
+
+        f_step_func = lambda a: np.mean(np.sum(np.abs(b_matrix @ a - b_vector), axis=0))
+        g_step_func = lambda a: (np.sum(b_matrix.T @ np.sign(b_matrix @ a - b_vector), axis=1)) / n_distributions
+
+        a_best = a_step
+        f_best = f_step_func(a_step)
+        if np.linalg.norm(g_step_func(a_step)) == 0:
+            df_best = pd.DataFrame(a_best.T, columns=df_aligned.columns, index=["barycenter"])
+            df_best = df_best.T.reindex(self.ordered_leaves).T
+            return df_best
+        # print(np.linalg.norm(g_step_func(a_step)), 1 / np.linalg.norm(g_step_func(a_step)))
+
+        for i in range(max_iter):
+            g_step = g_step_func(a_step)
+            if g_step.sum() == 0:
+                break
+            step_size = init_step_size / (i + 1)**step_size_decay / np.linalg.norm(g_step)
+            a_step = a_step - np.array([step_size * g_step]).T
+            a_step = self.project_to_simplex(a_step)
+
+            if f_best > f_step_func(a_step):
+                f_best = f_step_func(a_step)
+                a_best = a_step
+        df_best = pd.DataFrame(a_best.T, columns=df_aligned.columns, index=["barycenter"])
+        df_best = df_best.T.reindex(self.ordered_leaves).T
+        return df_best
+        

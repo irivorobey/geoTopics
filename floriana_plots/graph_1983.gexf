@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-07-23">
+    <creator>NetworkX 3.2.1</creator>
+  </meta>
+  <graph defaultedgetype="undirected" mode="static" name="">
+    <nodes>
+      <node id="United Arab Emirates" label="United Arab Emirates" />
+      <node id="Cameroon" label="Cameroon" />
+      <node id="Cambodia" label="Cambodia" />
+      <node id="Morocco" label="Morocco" />
+      <node id="Mali" label="Mali" />
+      <node id="Sierra Leone" label="Sierra Leone" />
+      <node id="Uganda" label="Uganda" />
+      <node id="Albania" label="Albania" />
+      <node id="Azerbaijan" label="Azerbaijan" />
+      <node id="Belarus" label="Belarus" />
+      <node id="Georgia" label="Georgia" />
+      <node id="Kazakhstan" label="Kazakhstan" />
+      <node id="Lithuania" label="Lithuania" />
+      <node id="Tajikistan" label="Tajikistan" />
+      <node id="Ukraine" label="Ukraine" />
+      <node id="Uzbekistan" label="Uzbekistan" />
+      <node id="Virgin Islands (British)" label="Virgin Islands (British)" />
+      <node id="Armenia" label="Armenia" />
+      <node id="Estonia" label="Estonia" />
+      <node id="Iceland" label="Iceland" />
+      <node id="Bangladesh" label="Bangladesh" />
+      <node id="Indonesia" label="Indonesia" />
+      <node id="Bolivia, Plurinational State of" label="Bolivia, Plurinational State of" />
+      <node id="Dominican Republic" label="Dominican Republic" />
+      <node id="Ecuador" label="Ecuador" />
+      <node id="Ghana" label="Ghana" />
+      <node id="Honduras" label="Honduras" />
+      <node id="Zambia" label="Zambia" />
+      <node id="Iraq" label="Iraq" />
+      <node id="Kuwait" label="Kuwait" />
+      <node id="Latvia" label="Latvia" />
+      <node id="Gambia" label="Gambia" />
+      <node id="Luxembourg" label="Luxembourg" />
+      <node id="Qatar" label="Qatar" />
+      <node id="Viet Nam" label="Viet Nam" />
+      <node id="Jamaica" label="Jamaica" />
+      <node id="Sri Lanka" label="Sri Lanka" />
+      <node id="Myanmar" label="Myanmar" />
+      <node id="Sudan" label="Sudan" />
+      <node id="Tanzania, United Republic of" label="Tanzania, United Republic of" />
+      <node id="Niger" label="Niger" />
+      <node id="Papua New Guinea" label="Papua New Guinea" />
+      <node id="Philippines" label="Philippines" />
+      <node id="Nepal" label="Nepal" />
+      <node id="Uruguay" label="Uruguay" />
+      <node id="Romania" label="Romania" />
+      <node id="Thailand" label="Thailand" />
+    </nodes>
+    <edges>
+      <edge source="United Arab Emirates" target="Cameroon" id="0" />
+      <edge source="United Arab Emirates" target="Cambodia" id="1" />
+      <edge source="United Arab Emirates" target="Morocco" id="2" />
+      <edge source="United Arab Emirates" target="Mali" id="3" />
+      <edge source="United Arab Emirates" target="Sierra Leone" id="4" />
+      <edge source="United Arab Emirates" target="Uganda" id="5" />
+      <edge source="Cameroon" target="Cambodia" id="6" />
+      <edge source="Cameroon" target="Morocco" id="7" />
+      <edge source="Cameroon" target="Mali" id="8" />
+      <edge source="Cameroon" target="Sierra Leone" id="9" />
+      <edge source="Cameroon" target="Uganda" id="10" />
+      <edge source="Cambodia" target="Morocco" id="11" />
+      <edge source="Cambodia" target="Mali" id="12" />
+      <edge source="Cambodia" target="Sierra Leone" id="13" />
+      <edge source="Cambodia" target="Uganda" id="14" />
+      <edge source="Morocco" target="Mali" id="15" />
+      <edge source="Morocco" target="Sierra Leone" id="16" />
+      <edge source="Morocco" target="Uganda" id="17" />
+      <edge source="Mali" target="Sierra Leone" id="18" />
+      <edge source="Mali" target="Uganda" id="19" />
+      <edge source="Sierra Leone" target="Uganda" id="20" />
+      <edge source="Albania" target="Azerbaijan" id="21" />
+      <edge source="Albania" target="Belarus" id="22" />
+      <edge source="Albania" target="Georgia" id="23" />
+      <edge source="Albania" target="Kazakhstan" id="24" />
+      <edge source="Albania" target="Lithuania" id="25" />
+      <edge source="Albania" target="Tajikistan" id="26" />
+      <edge source="Albania" target="Ukraine" id="27" />
+      <edge source="Albania" target="Uzbekistan" id="28" />
+      <edge source="Albania" target="Virgin Islands (British)" id="29" />
+      <edge source="Azerbaijan" target="Georgia" id="30" />
+      <edge source="Azerbaijan" target="Kazakhstan" id="31" />
+      <edge source="Azerbaijan" target="Lithuania" id="32" />
+      <edge source="Azerbaijan" target="Tajikistan" id="33" />
+      <edge source="Azerbaijan" target="Uzbekistan" id="34" />
+      <edge source="Azerbaijan" target="Virgin Islands (British)" id="35" />
+      <edge source="Belarus" target="Georgia" id="36" />
+      <edge source="Belarus" target="Kazakhstan" id="37" />
+      <edge source="Belarus" target="Lithuania" id="38" />
+      <edge source="Belarus" target="Tajikistan" id="39" />
+      <edge source="Belarus" target="Uzbekistan" id="40" />
+      <edge source="Belarus" target="Virgin Islands (British)" id="41" />
+      <edge source="Georgia" target="Kazakhstan" id="42" />
+      <edge source="Georgia" target="Lithuania" id="43" />
+      <edge source="Georgia" target="Latvia" id="44" />
+      <edge source="Georgia" target="Tajikistan" id="45" />
+      <edge source="Georgia" target="Ukraine" id="46" />
+      <edge source="Georgia" target="Uzbekistan" id="47" />
+      <edge source="Georgia" target="Virgin Islands (British)" id="48" />
+      <edge source="Kazakhstan" target="Iceland" id="49" />
+      <edge source="Kazakhstan" target="Lithuania" id="50" />
+      <edge source="Kazakhstan" target="Latvia" id="51" />
+      <edge source="Kazakhstan" target="Tajikistan" id="52" />
+      <edge source="Kazakhstan" target="Ukraine" id="53" />
+      <edge source="Kazakhstan" target="Uzbekistan" id="54" />
+      <edge source="Kazakhstan" target="Virgin Islands (British)" id="55" />
+      <edge source="Lithuania" target="Latvia" id="56" />
+      <edge source="Lithuania" target="Tajikistan" id="57" />
+      <edge source="Lithuania" target="Uzbekistan" id="58" />
+      <edge source="Lithuania" target="Virgin Islands (British)" id="59" />
+      <edge source="Tajikistan" target="Latvia" id="60" />
+      <edge source="Tajikistan" target="Uzbekistan" id="61" />
+      <edge source="Tajikistan" target="Virgin Islands (British)" id="62" />
+      <edge source="Uzbekistan" target="Latvia" id="63" />
+      <edge source="Uzbekistan" target="Romania" id="64" />
+      <edge source="Uzbekistan" target="Virgin Islands (British)" id="65" />
+      <edge source="Virgin Islands (British)" target="Latvia" id="66" />
+      <edge source="Armenia" target="Estonia" id="67" />
+      <edge source="Armenia" target="Iceland" id="68" />
+      <edge source="Estonia" target="Iraq" id="69" />
+      <edge source="Estonia" target="Iceland" id="70" />
+      <edge source="Estonia" target="Kuwait" id="71" />
+      <edge source="Bangladesh" target="Indonesia" id="72" />
+      <edge source="Indonesia" target="Jamaica" id="73" />
+      <edge source="Bolivia, Plurinational State of" target="Dominican Republic" id="74" />
+      <edge source="Bolivia, Plurinational State of" target="Ecuador" id="75" />
+      <edge source="Bolivia, Plurinational State of" target="Ghana" id="76" />
+      <edge source="Bolivia, Plurinational State of" target="Honduras" id="77" />
+      <edge source="Bolivia, Plurinational State of" target="Zambia" id="78" />
+      <edge source="Dominican Republic" target="Ecuador" id="79" />
+      <edge source="Dominican Republic" target="Ghana" id="80" />
+      <edge source="Dominican Republic" target="Honduras" id="81" />
+      <edge source="Dominican Republic" target="Zambia" id="82" />
+      <edge source="Ecuador" target="Ghana" id="83" />
+      <edge source="Ecuador" target="Honduras" id="84" />
+      <edge source="Ecuador" target="Zambia" id="85" />
+      <edge source="Ghana" target="Honduras" id="86" />
+      <edge source="Ghana" target="Zambia" id="87" />
+      <edge source="Honduras" target="Zambia" id="88" />
+      <edge source="Gambia" target="Luxembourg" id="89" />
+      <edge source="Gambia" target="Qatar" id="90" />
+      <edge source="Gambia" target="Viet Nam" id="91" />
+      <edge source="Luxembourg" target="Qatar" id="92" />
+      <edge source="Luxembourg" target="Viet Nam" id="93" />
+      <edge source="Qatar" target="Viet Nam" id="94" />
+      <edge source="Sri Lanka" target="Myanmar" id="95" />
+      <edge source="Myanmar" target="Sudan" id="96" />
+      <edge source="Myanmar" target="Tanzania, United Republic of" id="97" />
+      <edge source="Niger" target="Papua New Guinea" id="98" />
+      <edge source="Niger" target="Philippines" id="99" />
+      <edge source="Papua New Guinea" target="Philippines" id="100" />
+      <edge source="Nepal" target="Uruguay" id="101" />
+      <edge source="Uruguay" target="Thailand" id="102" />
+    </edges>
+  </graph>
+</gexf>
