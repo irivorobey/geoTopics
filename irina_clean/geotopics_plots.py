@@ -3,6 +3,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.colors as mcolors
 import matplotlib.patches as mpatches
 
+
 from collections import defaultdict
 import numpy as np
 import pandas as pd
@@ -258,6 +259,7 @@ def plot_panel_profiles_pie_fields(df, subfield_tree, n_rows, idx_rows, level_ro
 
     plt.tight_layout()
 
+
 def draw_polar(ax, df, year, r_max, color_dict_tmp):
     position_list = (
         df_subfield
@@ -422,3 +424,818 @@ def draw_polar(ax, df, year, r_max, color_dict_tmp):
     # plt.savefig(f"spec_art_{year}_no_fields.svg",format="svg",
     #     transparent=True,)
     _ = ax.text(np.pi / 2, 5*r_max, year, va="center", ha="center", fontsize=24, fontweight="bold")
+
+
+def dyn_clusters_preprocess(
+    df_mapping,
+    year_list,
+    color_dict_tmp,
+    n_countries_total=195,
+    width=0.3,
+):
+    """
+    Preprocess all information needed for the dynamic-cluster plot.
+
+    This function does NOT depend on country_list, so it only needs
+    to be run once if you want to change the highlighted countries.
+
+    Returns
+    -------
+    dict
+        All precomputed information needed for plotting.
+    """
+
+    # ------------------------------------------------------------
+    # 1. Cluster sizes / rectangles
+    # ------------------------------------------------------------
+
+    df_tmp = (
+        df_mapping
+        .query("year in @year_list")
+        .groupby(["dynamic_cluster", "year"], as_index=False)
+        .country.nunique()
+        .sort_values(
+            ["year", "dynamic_cluster"],
+            ascending=[False, True]
+        )
+        .assign(
+            country_share=lambda df: df.country / n_countries_total
+        )
+        .reset_index(drop=True)
+    )
+
+    total_share = (
+        df_tmp
+        .query("year == 2023")
+        .country_share
+        .sum()
+    )
+
+    # One row in df_tmp -> one rectangle
+    rectangles = []
+    rectangle_colors = []
+
+    for i, year_loop in enumerate(year_list):
+
+        df_year = df_tmp.query("year == @year_loop")
+
+        vert_coord = 0
+
+        for _, row in df_year.iterrows():
+
+            cluster = row["dynamic_cluster"]
+            share = row["country_share"]
+
+            x = len(year_list) - i - width
+            y = vert_coord
+            w = width
+            h = share
+
+            rectangles.append((x, y, w, h))
+            rectangle_colors.append(color_dict_tmp[cluster])
+
+            vert_coord += share
+
+    # ------------------------------------------------------------
+    # 2. Pre-split mapping by year
+    # ------------------------------------------------------------
+
+    year_df = {
+        year: (
+            df_mapping
+            .query("year == @year")
+            [["country", "dynamic_cluster"]]
+            .copy()
+        )
+        for year in year_list
+    }
+
+    # ------------------------------------------------------------
+    # 3. Precompute all country flows
+    # ------------------------------------------------------------
+
+    # ------------------------------------------------------------
+    # 3. Precompute all country flows
+    # ------------------------------------------------------------
+
+    country_flows = [None] * len(rectangles)
+    cluster_flows = [None] * len(rectangles)
+
+    prev_y1 = {}
+
+    for k, year_loop in enumerate(year_list[1:]):
+
+        year_next = year_list[k]
+
+        if k < len(year_list) - 3:
+            year_prev = year_list[k + 2]
+            year_prev_prev = year_list[k + 3]
+
+        elif k < len(year_list) - 2:
+            year_prev = year_list[k + 2]
+            year_prev_prev = None
+
+        else:
+            year_prev = None
+            year_prev_prev = None
+
+        # --------------------------------------------------------
+        # Build transition dataframe with explicit column names
+        # --------------------------------------------------------
+
+        df_transition = (
+            year_df[year_loop]
+            .rename(columns={
+                "dynamic_cluster": "dynamic_cluster_cur"
+            })
+            .merge(
+                year_df[year_next].rename(columns={
+                    "dynamic_cluster": "dynamic_cluster_next"
+                }),
+                on="country",
+                how="left",
+            )
+        )
+
+        if year_prev is not None:
+            df_transition = df_transition.merge(
+                year_df[year_prev].rename(columns={
+                    "dynamic_cluster": "dynamic_cluster_prev"
+                }),
+                on="country",
+                how="left",
+            )
+
+        if year_prev_prev is not None:
+            df_transition = df_transition.merge(
+                year_df[year_prev_prev].rename(columns={
+                    "dynamic_cluster": "dynamic_cluster_prev_prev"
+                }),
+                on="country",
+                how="left",
+            )
+
+        # --------------------------------------------------------
+        # Process every current cluster
+        # --------------------------------------------------------
+
+        clusters_this_year = (
+            df_tmp
+            .query("year == @year_loop")
+            ["dynamic_cluster"]
+            .tolist()
+        )
+
+        # IMPORTANT:
+        # This must be shared across all current clusters
+        # for this year transition.
+
+        next_year_dict = {}
+
+        # Initialize destination-cluster positions ONCE
+
+        all_next_clusters = (
+            df_transition["dynamic_cluster_next"]
+            .dropna()
+            .unique()
+        )
+
+        for next_cluster in all_next_clusters:
+            next_cluster_idx = df_tmp.index[
+                (df_tmp["year"] == year_next)
+                & (
+                    df_tmp["dynamic_cluster"]
+                    == next_cluster
+                )
+            ][0]
+
+            next_year_dict[next_cluster] = (
+                rectangles[next_cluster_idx][1]
+            )
+
+        for cluster_loop in clusters_this_year:
+
+            df_cluster = df_transition.query(
+                "dynamic_cluster_cur == @cluster_loop"
+            ).copy()
+
+            # Same sorting as in the original code
+            if year_prev_prev is not None:
+
+                df_cluster = df_cluster.sort_values(
+                    [
+                        "dynamic_cluster_prev_prev",
+                        "dynamic_cluster_prev",
+                        "dynamic_cluster_next",
+                    ]
+                )
+
+            elif year_prev is not None:
+
+                df_cluster = df_cluster.sort_values(
+                    [
+                        "dynamic_cluster_prev",
+                        "dynamic_cluster_next",
+                    ]
+                )
+
+            else:
+
+                df_cluster = df_cluster.sort_values(
+                    ["dynamic_cluster_next"]
+                )
+
+            n_countries = len(df_cluster)
+
+            # ----------------------------------------------------
+            # Current rectangle
+            # ----------------------------------------------------
+
+            cur_cluster_idx = df_tmp.index[
+                (df_tmp["year"] == year_loop)
+                & (
+                    df_tmp["dynamic_cluster"]
+                    == cluster_loop
+                )
+            ][0]
+
+            country_step = (
+                rectangles[cur_cluster_idx][3]
+                / n_countries
+            )
+
+            # ----------------------------------------------------
+            # Country coordinates
+            # ----------------------------------------------------
+
+            y_cur = rectangles[cur_cluster_idx][1]
+
+            country_flow_list = []
+            cluster_flow_list = []
+
+            for _, row in df_cluster.iterrows():
+
+                country = row["country"]
+                next_cluster = row["dynamic_cluster_next"]
+
+                y1 = y_cur
+
+                # Country disappears in the next year
+                if pd.isna(next_cluster):
+                    y_cur += country_step
+                    continue
+
+                y2 = prev_y1.get(
+                    country,
+                    next_year_dict[next_cluster],
+                )
+
+                x1 = len(year_list) - k - 1
+                x2 = len(year_list) - k - width
+
+                country_flow_list.append(
+                    (
+                        x1,
+                        y1,
+                        x2,
+                        y2,
+                        country,
+                    )
+                )
+
+                # Short horizontal segment used for labels
+                x1_cluster = (
+                    len(year_list) - k - width
+                )
+
+                x2_cluster = (
+                    len(year_list) - k
+                )
+
+                cluster_flow_list.append(
+                    (
+                        x1_cluster,
+                        y2,
+                        x2_cluster,
+                        y2,
+                        country,
+                    )
+                )
+
+                # Update positions
+                prev_y1[country] = y_cur
+
+                next_year_dict[next_cluster] += country_step
+
+                y_cur += country_step
+
+            country_flows[cur_cluster_idx] = (
+                country_flow_list
+            )
+
+            cluster_flows[cur_cluster_idx] = (
+                cluster_flow_list
+            )
+
+    return {
+        "df_tmp": df_tmp,
+        "rectangles": rectangles,
+        "rectangle_colors": rectangle_colors,
+        "country_flows": country_flows,
+        "cluster_flows": cluster_flows,
+        "year_list": year_list,
+        "width": width,
+        "total_share": total_share,
+    }
+
+
+def dyn_clusters_country_info(preprocessed, country_list):
+    """
+    Prepare information needed to highlight selected countries.
+
+    This is intentionally cheap: all flow coordinates have already
+    been calculated during preprocessing.
+    """
+
+    country_set = set(country_list)
+
+    country_flows = preprocessed["country_flows"]
+    cluster_flows = preprocessed["cluster_flows"]
+
+    highlighted_flows = []
+    highlighted_cluster_flows = []
+
+    for flows in country_flows:
+        if flows is None:
+            highlighted_flows.append([])
+            continue
+
+        highlighted_flows.append([
+            flow
+            for flow in flows
+            if flow[4] in country_set
+        ])
+
+    for flows in cluster_flows:
+        if flows is None:
+            highlighted_cluster_flows.append([])
+            continue
+
+        highlighted_cluster_flows.append([
+            flow
+            for flow in flows
+            if flow[4] in country_set
+        ])
+
+    return {
+        "country_list": list(country_list),
+        "country_set": country_set,
+        "country_flows": highlighted_flows,
+        "cluster_flows": highlighted_cluster_flows,
+    }
+
+
+def dyn_clusters_draw_flow(
+    ax,
+    x0,
+    y0,
+    x1,
+    y1,
+    curvature=0.5,
+    color="grey",
+    alpha=0.5,
+    zorder=0,
+):
+    from matplotlib.path import Path
+    import matplotlib.patches as patches
+
+    dx = x1 - x0
+
+    control1 = (x0 + curvature * dx, y0)
+    control2 = (x1 - curvature * dx, y1)
+
+    path = Path(
+        [
+            (x0, y0),
+            control1,
+            control2,
+            (x1, y1),
+        ],
+        [
+            Path.MOVETO,
+            Path.CURVE4,
+            Path.CURVE4,
+            Path.CURVE4,
+        ],
+    )
+
+    patch = patches.PathPatch(
+        path,
+        facecolor="none",
+        edgecolor=color,
+        linewidth=1.5,
+        alpha=alpha,
+        zorder=zorder,
+    )
+
+    ax.add_patch(patch)
+
+
+def dyn_clusters_plot(
+    preprocessed,
+    country_info,
+    base_fontsize=20,
+    figsize=(24, 12),
+    label_offsets = {
+        "RU": 0,
+        "ZA": 0,
+        "ID": 0.02,
+        "FR": -0.01,
+        "CN": -0.01,
+        "BR": -0.025,
+    },
+    ax= None,
+):
+    """
+    Plot dynamic clusters and country flows.
+
+    Parameters
+    ----------
+    preprocessed : dict
+        Output of preprocess_dynamic_clusters().
+    country_info : dict
+        Output of prepare_country_info().
+
+    Returns
+    -------
+    fig : matplotlib.figure.Figure
+    ax : matplotlib.axes.Axes
+    """
+
+    rectangles = preprocessed["rectangles"]
+    rectangle_colors = preprocessed["rectangle_colors"]
+    year_list_preproc = preprocessed["year_list"]
+
+    country_flows = preprocessed["country_flows"]
+    cluster_flows = preprocessed["cluster_flows"]
+
+    country_set = country_info["country_set"]
+
+    year_list = year_list_preproc[::-1]
+
+    # ------------------------------------------------------------
+    # Figure
+    # ------------------------------------------------------------
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+
+    ax.set_title(
+        "DYNAMIC CLUSTERS",
+        fontsize=base_fontsize + 2,
+        fontweight="bold",
+    )
+
+    # ------------------------------------------------------------
+    # Cluster rectangles
+    # ------------------------------------------------------------
+
+    for (x, y, w, h), color in zip(
+        rectangles,
+        rectangle_colors,
+    ):
+
+        rect = mpatches.Rectangle(
+            (x, y),
+            w,
+            h,
+            edgecolor=None,
+            facecolor=color,
+            zorder=1,
+        )
+
+        ax.add_patch(rect)
+
+    # ------------------------------------------------------------
+    # Country flows
+    # ------------------------------------------------------------
+
+    for flows in country_flows:
+
+        if flows is None:
+            continue
+
+        for x0, y0, x1, y1, country in flows:
+
+            if country in country_set:
+                dyn_clusters_draw_flow(
+                    ax,
+                    x0,
+                    y0,
+                    x1,
+                    y1,
+                    curvature=0.4,
+                    color="black",
+                    alpha=0.8,
+                    zorder=2,
+                )
+
+            else:
+                dyn_clusters_draw_flow(
+                    ax,
+                    x0,
+                    y0,
+                    x1,
+                    y1,
+                    curvature=0.4,
+                    color="lightgrey",
+                    alpha=0.4,
+                    zorder=2,
+                )
+
+    # ------------------------------------------------------------
+    # Cluster flows + country labels
+    # ------------------------------------------------------------
+
+    printed_list = []
+
+    for flows in cluster_flows:
+
+        if flows is None:
+            continue
+
+        for x0, y0, x1, y1, country in flows:
+
+            if country in country_set:
+
+                dyn_clusters_draw_flow(
+                    ax,
+                    x0,
+                    y0,
+                    x1,
+                    y1,
+                    curvature=0.4,
+                    color="black",
+                    alpha=0.2,
+                    zorder=2,
+                )
+
+                if country not in printed_list:
+
+                    y_label = (
+                        y1
+                        + label_offsets.get(country, 0)
+                    )
+
+                    ax.text(
+                        x1 + 0.08,
+                        y_label,
+                        country,
+                        ha="left",
+                        va="center",
+                        fontsize=base_fontsize + 2,
+                        fontweight="bold",
+                    )
+
+                    printed_list.append(country)
+
+            else:
+
+                dyn_clusters_draw_flow(
+                    ax,
+                    x0,
+                    y0,
+                    x1,
+                    y1,
+                    curvature=0.4,
+                    color="white",
+                    alpha=0.2,
+                    zorder=2,
+                )
+
+    # ------------------------------------------------------------
+    # Formatting
+    # ------------------------------------------------------------
+
+    width = preprocessed["width"]
+
+    ax.set_ylabel(
+        "Share of countries by cluster, %",
+        fontsize=base_fontsize,
+    )
+
+    ax.set_xlim(0, len(year_list))
+    ax.set_ylim(0, 1)
+
+    ax.set_xticks(
+        np.arange(len(year_list)) + 1 - width / 2
+    )
+
+    ax.set_xticklabels(
+        year_list,
+        fontsize=base_fontsize,
+    )
+
+    ax.set_yticks(
+        np.linspace(0, 1, 6),
+        labels=np.linspace(0, 100, 6, dtype=int),
+    )
+
+    ax.tick_params(
+        axis="y",
+        labelsize=base_fontsize,
+    )
+
+    ax.tick_params(
+        axis="x",
+        color="none",
+    )
+
+    ax.grid(
+        axis="y",
+        linestyle="-",
+        linewidth=1,
+        alpha=0.3,
+        zorder=0,
+    )
+
+    ax.set_aspect("auto")
+
+    return ax
+
+
+def plot_clustering_scores(
+    ax,
+    year_list,
+    silhouette_score,
+    ari_score_mean,
+    modularity,
+    vertical_lines=None,
+    ylim=(0, 1.05),
+    color_list = ["#7d222e", "#b35f6a", "#9D9D9D"]
+):
+    """
+    Plot clustering quality scores over time.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axis on which to draw the plot.
+
+    year_list : array-like
+        Years.
+
+    silhouette_score : array-like
+        Silhouette scores.
+
+    ari_score_mean : array-like
+        Mean ARI scores.
+
+    modularity : array-like
+        Modularity scores.
+
+    vertical_lines : array-like, optional
+        Years at which to draw vertical reference lines.
+
+    ylim : tuple, optional
+        Y-axis limits.
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+    """
+
+    ax.plot(year_list, silhouette_score, color = color_list[0])
+    ax.scatter(
+        year_list,
+        silhouette_score,
+        label="silhouette",
+        color = color_list[0]
+    )
+
+    ax.plot(year_list, ari_score_mean, color = color_list[1])
+    ax.scatter(
+        year_list,
+        ari_score_mean,
+        label="ARI",
+        color = color_list[1]
+    )
+
+    ax.plot(year_list, modularity, color = color_list[2])
+    ax.scatter(
+        year_list,
+        modularity,
+        label="modularity",
+        color = color_list[2]
+    )
+
+    if vertical_lines is not None:
+        for year in vertical_lines:
+            ax.axvline(year)
+
+    ax.set_ylim(*ylim)
+    ax.grid(alpha=0.3)
+
+    ax.legend()
+
+    return ax
+
+
+def plot_cluster_map(
+    ax,
+    year,
+    df_mapping,
+    world,
+    df_country,
+    color_dict_tmp,
+    title_fontsize=22,
+):
+    """
+    Plot dynamic clusters on a world map for a given year.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axis on which to draw the map.
+
+    year : int
+        Year to plot.
+
+    df_mapping : pd.DataFrame
+        Country-to-cluster mapping.
+
+    world : geopandas.GeoDataFrame
+        World geometries.
+
+    df_country : pd.DataFrame
+        Country code mapping containing 'alpha-2' and 'alpha-3'.
+
+    color_dict_tmp : dict
+        Mapping from dynamic cluster to color.
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+    """
+
+    # ------------------------------------------------------------
+    # Merge country cluster information with country codes
+    # ------------------------------------------------------------
+
+    mapping_year = (
+        df_mapping
+        .query("year == @year")
+        .merge(
+            df_country[["alpha-2", "alpha-3"]],
+            left_on="country",
+            right_on="alpha-2",
+            how="left",
+        )
+    )
+
+    # ------------------------------------------------------------
+    # Merge with world geometry
+    # ------------------------------------------------------------
+
+    world_ = world.merge(
+        mapping_year,
+        left_on="ISO_A3_EH",
+        right_on="alpha-3",
+        how="left",
+    )
+
+    # ------------------------------------------------------------
+    # Map cluster → color
+    # ------------------------------------------------------------
+
+    world_["color"] = (
+        world_["dynamic_cluster"]
+        .map(color_dict_tmp)
+        .fillna("white")
+    )
+
+    # ------------------------------------------------------------
+    # Plot
+    # ------------------------------------------------------------
+
+    world_.plot(
+        color=world_["color"],
+        edgecolor="#242424",
+        linewidth=0.6,
+        ax=ax,
+    )
+
+    # ------------------------------------------------------------
+    # Formatting
+    # ------------------------------------------------------------
+
+    ax.set_axis_off()
+    ax.margins(0)
+
+    ax.set_title(
+        year,
+        fontsize=title_fontsize,
+        fontweight="bold",
+    )
+
+    return ax

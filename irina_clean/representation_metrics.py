@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 
-class SomeClass():
+class SpecificityMetric():
 
     def __init__(self, df_prob):
         self._df_prob = df_prob

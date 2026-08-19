@@ -8,7 +8,7 @@ import leidenalg
 
 class GlobalMapping():
     
-    def __init__(self, df_distances, df_prob, df_total, distance_func, barycenter_func,
+    def __init__(self, df_distances, df_prob, df_total, distance_func,
                  similarity_sigma=0.1, static_articles_threshold=500,
                  dyn_similarity_threshold=0.1, dyn_cluster_size_threshold=0.01):
         self._random_seed = 10
