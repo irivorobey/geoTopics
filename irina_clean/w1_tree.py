@@ -281,6 +281,8 @@ class W1Tree():
 
         diff_array = (df_cross.values[:, :len(self.ordered_leaves)] - df_cross.values[:, -len(self.ordered_leaves):])
         dist_array = np.sum((np.abs(self.__distance_matrix[:, -self._n_leaves:] @ diff_array.T)), axis=0)
+        self._test = (np.abs(self.__distance_matrix[:, -self._n_leaves:] @ diff_array.T))
+        self._test2 =  diff_array
         return pd.DataFrame(dist_array,
                             index=m_index,
                             columns=["distance"]).reset_index().pivot(index="first", columns="second").droplevel(0, axis=1)
